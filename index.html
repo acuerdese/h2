@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Animated Poll</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Container for the entire poll */
+        .poll-container {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative; /* For animations */
+            overflow: hidden; /* Hide overflowing animation content */
+        }
+
+        /* Slide specific styling */
+        .poll-slide {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+            min-height: 250px; /* Ensure consistent height for slides */
+            box-sizing: border-box;
+        }
+
+        /* Question text */
+        .question-text {
+            font-size: 1.75rem; /* Larger font for questions */
+            font-weight: 700;
+            color: #1a202c; /* Dark text */
+            margin-bottom: 2rem;
+        }
+
+        /* Options container for radio buttons */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 1rem; /* Space between options */
+        }
+
+        /* Input field for text questions */
+        .text-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            border: 2px solid #a0aec0;
+            font-size: 1rem;
+            color: #2d3748;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+            max-width: 400px; /* Limit width for text input */
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+
+        /* Individual option button/label for radio */
+        .option-label {
+            display: flex;
+            align-items: center;
+            background-color: #edf2f7; /* Light background for options */
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem; /* Rounded corners for options */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative; /* For custom radio button */
+            text-align: left;
+            width: 100%; /* Ensure options take full width */
+            font-weight: 600;
+            color: #4a5568;
+            border: 2px solid transparent; /* Border for selected state */
+        }
+
+        .option-label:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-input {
+            opacity: 0; /* Hide default radio button */
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+        }
+
+        /* Custom radio button indicator */
+        .custom-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #a0aec0;
+            border-radius: 50%;
+            margin-right: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0; /* Prevent shrinking */
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .custom-radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Checked state for custom radio and label */
+        .option-input:checked + .option-label {
+            background-color: #c3dafe; /* Light blue for selected */
+            border-color: #4299e1; /* Blue border for selected */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .option-input:checked + .option-label .custom-radio {
+            border-color: #4299e1; /* Blue border when checked */
+            background-color: #4299e1; /* Blue background when checked */
+        }
+
+        .option-input:checked + .option-label .custom-radio::after {
+            background-color: #ffffff; /* White dot inside when checked */
+        }
+
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .nav-button {
+            background-color: #4299e1; /* Blue button */
+            color: #ffffff;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-button:hover {
+            background-color: #3182ce; /* Darker blue on hover */
+            transform: translateY(-1px);
+            box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            background-color: #a0aec0; /* Gray when disabled */
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Final screen styling */
+        #finalScreen {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        /* Animation Keyframes */
+        /* Fade In/Out */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* Slide In/Out Right */
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-100%); opacity: 0; }
+        }
+
+        /* Slide In/Out Left */
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutLeft {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Zoom In/Out */
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        @keyframes zoomOut {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(1.2); opacity: 0; }
+        }
+
+        /* Rotate In/Out */
+        @keyframes rotateIn {
+            from { transform: rotateY(90deg); opacity: 0; }
+            to { transform: rotateY(0deg); opacity: 1; }
+        }
+        @keyframes rotateOut {
+            from { transform: rotateY(0deg); opacity: 1; }
+            to { transform: rotateY(-90deg); opacity: 0; }
+        }
+
+        /* Pop In/Out */
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; filter: blur(5px); }
+            to { transform: scale(1); opacity: 1; filter: blur(0); }
+        }
+        @keyframes popOut {
+            from { transform: scale(1); opacity: 1; filter: blur(0); }
+            to { transform: scale(0.5); opacity: 0; filter: blur(5px); }
+        }
+
+        /* Classes to apply animations */
+        .animate-in-fade { animation: fadeIn 0.7s ease-out forwards; }
+        .animate-out-fade { animation: fadeOut 0.7s ease-in forwards; }
+        .animate-in-slide-right { animation: slideInRight 0.7s ease-out forwards; }
+        .animate-out-slide-right { animation: slideOutRight 0.7s ease-in forwards; }
+        .animate-in-slide-left { animation: slideInLeft 0.7s ease-out forwards; }
+        .animate-out-slide-left { animation: slideOutLeft 0.7s ease-in forwards; }
+        .animate-in-zoom { animation: zoomIn 0.7s ease-out forwards; }
+        .animate-out-zoom { animation: zoomOut 0.7s ease-in forwards; }
+        .animate-in-rotate { animation: rotateIn 0.8s ease-out forwards; }
+        .animate-out-rotate { animation: rotateOut 0.8s ease-in forwards; }
+        .animate-in-pop { animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; }
+        .animate-out-pop { animation: popOut 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; }
+
+
+        /* Ensure the main content is positioned correctly for transitions */
+        .poll-content-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Absolute positioning for slides during transition */
+        .poll-slide.transitioning {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Message Box Styling */
+        .message-box-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .message-box-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .message-box {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .message-box-overlay.visible .message-box {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .message-box h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .message-box p {
+            font-size: 1rem;
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+        }
+
+        .message-box button {
+            background-color: #4299e1;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .message-box button:hover {
+            background-color: #3182ce;
+        }
+    </style>
+</head>
+<body>
+    <div class="poll-container">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Interactive Poll</h2>
+
+        <div id="pollContent" class="poll-content-wrapper">
+            <!-- Poll questions will be rendered here -->
+        </div>
+
+        <div id="navigationButtons" class="nav-buttons">
+            <button id="prevBtn" class="nav-button" disabled>Previous</button>
+            <button id="nextBtn" class="nav-button">Next</button>
+        </div>
+
+        <!-- Message Box Overlay -->
+        <div id="messageBoxOverlay" class="message-box-overlay">
+            <div class="message-box">
+                <h3 id="messageBoxTitle"></h3>
+                <p id="messageBoxContent"></p>
+                <button id="messageBoxCloseBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array of poll questions
+        const questions = [
+            {
+                type: "text", // New type for open-ended questions
+                questionText: "What is your full name?",
+                placeholder: "Enter your full name"
+            },
+            {
+                type: "text",
+                questionText: "Please enter your Player ID (if applicable):",
+                placeholder: "Enter your ID"
+            },
+            {
+                type: "text",
+                questionText: "What is your phone number? (Optional, for contact)",
+                placeholder: "e.g., 555-123-4567",
+                optional: true // Mark as optional
+            },
+            {
+                type: "radio",
+                questionText: "What's your favorite season of the year?",
+                options: ["Spring", "Summer", "Autumn", "Winter"]
+            },
+            {
+                type: "radio",
+                questionText: "Which fictional character would you most like to have as a friend?",
+                options: ["Gandalf", "Hermione Granger", "Iron Man", "Darth Vader"]
+            },
+            {
+                type: "radio",
+                questionText: "What is your favorite video game genre?",
+                options: ["RPG", "FPS", "Strategy", "Puzzle", "Sports"]
+            },
+            {
+                type: "radio",
+                questionText: "If you were a game developer, what kind of game would you create?",
+                options: ["Open World RPG", "Fast-paced Action Game", "Mind-bending Puzzle", "Strategic Simulation"]
+            },
+            {
+                type: "radio",
+                questionText: "What's your preferred way to relax after a long day?",
+                options: ["Reading a book", "Watching TV/Movies", "Exercising", "Listening to music"]
+            },
+            {
+                type: "radio",
+                questionText: "Which type of cuisine do you enjoy the most?",
+                options: ["Italian", "Mexican", "Asian (e.g., Sushi, Thai)", "Indian"]
+            },
+            {
+                type: "radio",
+                questionText: "Are you an early bird or a night owl?",
+                options: ["Early Bird", "Night Owl"]
+            }
+        ];
+
+        // Global variables for poll state
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Stores answers: { questionIndex: N, question: "Q", answer: "A", type: "radio" | "text" }
+        let shuffledQuestions = [];
+        let appsScriptWebHookURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE'; // *** IMPORTANT: REPLACE THIS WITH YOUR DEPLOYED WEB APP URL ***
+
+        // DOM elements
+        const pollContent = document.getElementById('pollContent');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Animation classes
+        const entryAnimations = [
+            'animate-in-fade', 'animate-in-slide-right', 'animate-in-slide-left',
+            'animate-in-zoom', 'animate-in-rotate', 'animate-in-pop'
+        ];
+        const exitAnimations = [
+            'animate-out-fade', 'animate-out-slide-right', 'animate-out-slide-left',
+            'animate-out-zoom', 'animate-out-rotate', 'animate-out-pop'
+        ];
+
+        let currentEntryAnimation = '';
+        let currentExitAnimation = '';
+
+        /**
+         * Shuffles an array randomly using Fisher-Yates algorithm.
+         * @param {Array} array - The array to shuffle.
+         * @returns {Array} The shuffled array.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+            return array;
+        }
+
+        /**
+         * Shows a custom message box instead of alert().
+         * @param {string} title - The title of the message box.
+         * @param {string} message - The content message.
+         */
+        function showMessageBox(title, message) {
+            document.getElementById('messageBoxTitle').innerText = title;
+            document.getElementById('messageBoxContent').innerText = message;
+            document.getElementById('messageBoxOverlay').classList.add('visible');
+        }
+
+        /**
+         * Hides the custom message box.
+         */
+        function hideMessageBox() {
+            document.getElementById('messageBoxOverlay').classList.remove('visible');
+        }
+
+        /**
+         * Renders the current question to the DOM with a random animation.
+         */
+        function renderQuestion() {
+            // Clear previous content
+            pollContent.innerHTML = '';
+
+            if (currentQuestionIndex >= shuffledQuestions.length) {
+                // End of poll
+                displayFinalScreen();
+                return;
+            }
+
+            const questionData = shuffledQuestions[currentQuestionIndex];
+            const pollSlide = document.createElement('div');
+            pollSlide.className = 'poll-slide';
+
+            // Pick a random entry animation
+            currentEntryAnimation = entryAnimations[Math.floor(Math.random() * entryAnimations.length)];
+            pollSlide.classList.add(currentEntryAnimation);
+
+            const questionText = document.createElement('p');
+            questionText.className = 'question-text';
+            questionText.textContent = `${currentQuestionIndex + 1}. ${questionData.questionText}`;
+            pollSlide.appendChild(questionText);
+
+            // Render based on question type
+            if (questionData.type === "radio") {
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+
+                questionData.options.forEach((option, index) => {
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.id = `option${index}`;
+                    radioInput.name = 'pollOption'; // Use a consistent name for radio group
+                    radioInput.value = option;
+                    radioInput.className = 'option-input';
+
+                    const optionLabel = document.createElement('label');
+                    optionLabel.htmlFor = `option${index}`;
+                    optionLabel.className = 'option-label';
+
+                    const customRadio = document.createElement('div');
+                    customRadio.className = 'custom-radio';
+                    optionLabel.appendChild(customRadio);
+
+                    const optionSpan = document.createElement('span');
+                    optionSpan.textContent = option;
+                    optionLabel.appendChild(optionSpan);
+
+                    // Check if this option was previously selected by the user for this question
+                    const storedAnswer = userAnswers.find(
+                        ans => ans.questionIndex === currentQuestionIndex
+                    );
+                    if (storedAnswer && storedAnswer.answer === option) {
+                        radioInput.checked = true;
+                    }
+
+                    // Add event listener for selection
+                    radioInput.addEventListener('change', (event) => {
+                        // Update the user's answer for the current question
+                        const existingAnswerIndex = userAnswers.findIndex(
+                            ans => ans.questionIndex === currentQuestionIndex
+                        );
+
+                        if (existingAnswerIndex !== -1) {
+                            userAnswers[existingAnswerIndex].answer = event.target.value;
+                        } else {
+                            userAnswers.push({
+                                questionIndex: currentQuestionIndex,
+                                question: questionData.questionText,
+                                answer: event.target.value,
+                                type: questionData.type
+                            });
+                        }
+                        updateNavigationButtons();
+                    });
+
+                    optionsContainer.appendChild(radioInput);
+                    optionsContainer.appendChild(optionLabel);
+                });
+                pollSlide.appendChild(optionsContainer);
+
+            } else if (questionData.type === "text") {
+                const textInput = document.createElement('input');
+                textInput.type = 'text';
+                textInput.className = 'text-input';
+                textInput.placeholder = questionData.placeholder || '';
+                textInput.id = 'currentTextInput'; // Unique ID for easy access
+
+                // Populate with existing answer if available
+                const storedAnswer = userAnswers.find(
+                    ans => ans.questionIndex === currentQuestionIndex
+                );
+                if (storedAnswer) {
+                    textInput.value = storedAnswer.answer;
+                }
+
+                // Add event listener to update answer as user types
+                textInput.addEventListener('input', (event) => {
+                    const existingAnswerIndex = userAnswers.findIndex(
+                        ans => ans.questionIndex === currentQuestionIndex
+                    );
+                    if (existingAnswerIndex !== -1) {
+                        userAnswers[existingAnswerIndex].answer = event.target.value;
+                    } else {
+                        userAnswers.push({
+                            questionIndex: currentQuestionIndex,
+                            question: questionData.questionText,
+                            answer: event.target.value,
+                            type: questionData.type
+                        });
+                    }
+                    updateNavigationButtons();
+                });
+                pollSlide.appendChild(textInput);
+            }
+
+            pollContent.appendChild(pollSlide);
+            updateNavigationButtons();
+        }
+
+        /**
+         * Updates the state of navigation buttons (Next/Previous).
+         */
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+
+            const currentQuestionData = shuffledQuestions[currentQuestionIndex];
+            const currentAnswer = userAnswers.find(ans => ans.questionIndex === currentQuestionIndex);
+
+            let isCurrentQuestionAnswered = false;
+            if (currentQuestionData.type === "radio") {
+                isCurrentQuestionAnswered = currentAnswer !== undefined && currentAnswer.answer !== "";
+            } else if (currentQuestionData.type === "text") {
+                // For text questions, if it's optional, it's considered "answered" even if empty.
+                // If not optional, it must have a non-empty value.
+                isCurrentQuestionAnswered = currentQuestionData.optional || (currentAnswer !== undefined && currentAnswer.answer.trim() !== "");
+            }
+
+            if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                nextBtn.textContent = 'Submit Poll';
+                nextBtn.disabled = !isCurrentQuestionAnswered; // Disable submit until current question is answered
+            } else {
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = !isCurrentQuestionAnswered; // Disable next until current question is answered
+            }
+        }
+
+        /**
+         * Handles the transition to the next question.
+         */
+        function nextQuestion() {
+            const currentSlide = pollContent.querySelector('.poll-slide');
+            if (currentSlide) {
+                // Check if current text input is valid before animating away
+                const currentQuestionData = shuffledQuestions[currentQuestionIndex];
+                if (currentQuestionData.type === 'text' && !currentQuestionData.optional) {
+                    const textInput = document.getElementById('currentTextInput');
+                    if (!textInput || textInput.value.trim() === '') {
+                        showMessageBox("Input Required", "Please fill in the required field before proceeding.");
+                        return; // Stop function execution
+                    }
+                }
+
+                currentExitAnimation = exitAnimations[Math.floor(Math.random() * exitAnimations.length)];
+                currentSlide.classList.add(currentExitAnimation, 'transitioning');
+
+                currentSlide.addEventListener('animationend', () => {
+                    currentQuestionIndex++;
+                    renderQuestion();
+                }, { once: true });
+            } else {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+        }
+
+        /**
+         * Handles the transition to the previous question.
+         */
+        function prevQuestion() {
+            const currentSlide = pollContent.querySelector('.poll-slide');
+            if (currentSlide) {
+                currentExitAnimation = exitAnimations[Math.floor(Math.random() * exitAnimations.length)];
+                currentSlide.classList.add(currentExitAnimation, 'transitioning');
+
+                currentSlide.addEventListener('animationend', () => {
+                    currentQuestionIndex--;
+                    renderQuestion();
+                }, { once: true });
+            } else {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        /**
+         * Displays the final screen and attempts submission.
+         */
+        function displayFinalScreen() {
+            pollContent.innerHTML = `
+                <div id="finalScreen" class="animate-in-fade">
+                    <p>Thank you for completing the poll!</p>
+                    <p class="mt-4 text-sm text-gray-600">
+                        Attempting to submit your answers to Google Sheet...
+                    </p>
+                    <p id="submissionStatus" class="mt-2 font-semibold text-gray-700"></p>
+                </div>
+            `;
+            navigationButtons.style.display = 'none'; // Hide navigation buttons
+
+            submitDataToGoogleSheet();
+        }
+
+        /**
+         * Submits data to Google Sheet via Apps Script Web App.
+         */
+        async function submitDataToGoogleSheet() {
+            const submissionStatusElement = document.getElementById('submissionStatus');
+            submissionStatusElement.textContent = "Sending data...";
+
+            // Filter out empty optional answers if they are truly empty strings and not just placeholder
+            const dataToSubmit = userAnswers.map(ans => ({
+                question: ans.question,
+                answer: ans.answer.trim() // Trim whitespace
+            })).filter(ans => ans.answer !== ""); // Remove entries with empty answers (especially for optional fields)
+
+            if (appsScriptWebHookURL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE' || !appsScriptWebHookURL) {
+                submissionStatusElement.textContent = "Error: Google Apps Script Web App URL not configured. See console for details.";
+                console.error("Google Apps Script Web App URL is not set. Please replace 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE' in the JavaScript code with your deployed Apps Script URL.");
+                showMessageBox(
+                    "Configuration Error",
+                    "The Google Apps Script URL has not been set. Please follow the instructions to deploy your Apps Script and update the HTML file with the correct URL."
+                );
+                return;
+            }
+
+            try {
+                const response = await fetch(appsScriptWebHookURL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Essential for Google Apps Script Web Apps when called from different origins
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dataToSubmit),
+                });
+
+                // With mode: 'no-cors', the response object will be opaque.
+                // We cannot inspect its status or content directly.
+                // So, we assume success if no network error occurred.
+                submissionStatusElement.textContent = "Data sent! Check your Google Sheet in a moment.";
+                showMessageBox(
+                    "Poll Submitted!",
+                    "Your responses have been successfully sent! Please check your Google Sheet for the data."
+                );
+                console.log('Poll data sent to Google Apps Script. Check your Google Sheet.');
+
+            } catch (error) {
+                submissionStatusElement.textContent = `Submission failed: ${error.message}. Check console for details.`;
+                showMessageBox(
+                    "Submission Failed",
+                    `There was an error sending your responses: ${error.message}. Please check your internet connection and the Apps Script setup.`
+                );
+                console.error("Error submitting poll data:", error);
+            }
+        }
+
+        // Event Listeners
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                prevQuestion();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const currentQuestionData = shuffledQuestions[currentQuestionIndex];
+            let isCurrentQuestionValid = false;
+
+            if (currentQuestionData.type === 'radio') {
+                const selectedOption = pollContent.querySelector('input[name="pollOption"]:checked');
+                isCurrentQuestionValid = selectedOption !== null;
+            } else if (currentQuestionData.type === 'text') {
+                const textInput = document.getElementById('currentTextInput');
+                // A text input is valid if it's optional, or if it's not optional and has content.
+                isCurrentQuestionValid = currentQuestionData.optional || (textInput && textInput.value.trim() !== '');
+            }
+
+            if (isCurrentQuestionValid) {
+                // Ensure text input value is saved before moving on
+                if (currentQuestionData.type === 'text') {
+                    const textInput = document.getElementById('currentTextInput');
+                    const existingAnswerIndex = userAnswers.findIndex(
+                        ans => ans.questionIndex === currentQuestionIndex
+                    );
+                    if (existingAnswerIndex !== -1) {
+                        userAnswers[existingAnswerIndex].answer = textInput.value;
+                    } else {
+                        userAnswers.push({
+                            questionIndex: currentQuestionIndex,
+                            question: currentQuestionData.questionText,
+                            answer: textInput.value,
+                            type: currentQuestionData.type
+                        });
+                    }
+                }
+
+                if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                    displayFinalScreen();
+                } else {
+                    nextQuestion();
+                }
+            } else {
+                showMessageBox("Selection Required", "Please answer the current question before proceeding.");
+            }
+        });
+
+        document.getElementById('messageBoxCloseBtn').addEventListener('click', hideMessageBox);
+
+        // Initialize the poll when the window loads
+        window.onload = function() {
+            // Shuffle questions once at the start
+            shuffledQuestions = shuffleArray([...questions]);
+            renderQuestion();
+        };
+
+    </script>
+</body>
+</html>
