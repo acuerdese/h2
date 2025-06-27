@@ -441,7 +441,7 @@
         let currentQuestionIndex = 0;
         let userAnswers = []; // Stores answers: { questionIndex: N, question: "Q", answer: "A", type: "radio" | "text" }
         let shuffledQuestions = [];
-        let appsScriptWebHookURL = 'https://script.google.com/macros/s/AKfycbxPbpr6YMB_OvHTgdRzB2tRZyfg7o_v8jpyQHyCqxeMXyHjp8xV54QYbsgX2b2gVv9eIA/exec'; // *** IMPORTANT: REPLACE THIS WITH YOUR DEPLOYED WEB APP URL ***
+        let appsScriptWebHookURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE'; // *** IMPORTANT: REPLACE THIS WITH YOUR DEPLOYED WEB APP URL ***
 
         // DOM elements
         const pollContent = document.getElementById('pollContent');
@@ -496,32 +496,49 @@
          * Renders the current question to the DOM with a random animation.
          */
         function renderQuestion() {
+            // Log to confirm renderQuestion is called
+            console.log('renderQuestion called. currentQuestionIndex:', currentQuestionIndex);
+
             // Clear previous content
             pollContent.innerHTML = '';
 
+            // Ensure pollContent element exists
+            if (!pollContent) {
+                console.error("Error: 'pollContent' element not found in the DOM. Check your HTML structure for the element with id='pollContent'.");
+                showMessageBox("Critical Error", "Poll content area missing. Please check HTML. (Details in browser console)");
+                return;
+            }
+
             if (currentQuestionIndex >= shuffledQuestions.length) {
                 // End of poll
+                console.log('End of poll reached. Displaying final screen.');
                 displayFinalScreen();
                 return;
             }
 
             const questionData = shuffledQuestions[currentQuestionIndex];
+            console.log('Rendering question:', questionData.questionText, 'Type:', questionData.type);
+
             const pollSlide = document.createElement('div');
             pollSlide.className = 'poll-slide';
+            console.log('pollSlide element created.');
 
             // Pick a random entry animation
             currentEntryAnimation = entryAnimations[Math.floor(Math.random() * entryAnimations.length)];
             pollSlide.classList.add(currentEntryAnimation);
+            console.log('Applied animation:', currentEntryAnimation);
 
             const questionText = document.createElement('p');
             questionText.className = 'question-text';
             questionText.textContent = `${currentQuestionIndex + 1}. ${questionData.questionText}`;
             pollSlide.appendChild(questionText);
+            console.log('Question text appended.');
 
             // Render based on question type
             if (questionData.type === "radio") {
                 const optionsContainer = document.createElement('div');
                 optionsContainer.className = 'options-container';
+                console.log('Rendering radio options.');
 
                 questionData.options.forEach((option, index) => {
                     const radioInput = document.createElement('input');
@@ -553,6 +570,7 @@
 
                     // Add event listener for selection
                     radioInput.addEventListener('change', (event) => {
+                        console.log('Radio option changed:', event.target.value);
                         // Update the user's answer for the current question
                         const existingAnswerIndex = userAnswers.findIndex(
                             ans => ans.questionIndex === currentQuestionIndex
@@ -577,6 +595,7 @@
                 pollSlide.appendChild(optionsContainer);
 
             } else if (questionData.type === "text") {
+                console.log('Rendering text input.');
                 const textInput = document.createElement('input');
                 textInput.type = 'text';
                 textInput.className = 'text-input';
@@ -593,6 +612,7 @@
 
                 // Add event listener to update answer as user types
                 textInput.addEventListener('input', (event) => {
+                    console.log('Text input changed:', event.target.value);
                     const existingAnswerIndex = userAnswers.findIndex(
                         ans => ans.questionIndex === currentQuestionIndex
                     );
@@ -612,6 +632,7 @@
             }
 
             pollContent.appendChild(pollSlide);
+            console.log('pollSlide appended to pollContent.');
             updateNavigationButtons();
         }
 
@@ -640,12 +661,14 @@
                 nextBtn.textContent = 'Next';
                 nextBtn.disabled = !isCurrentQuestionAnswered; // Disable next until current question is answered
             }
+            console.log('Navigation buttons updated. Next disabled:', nextBtn.disabled);
         }
 
         /**
          * Handles the transition to the next question.
          */
         function nextQuestion() {
+            console.log('nextQuestion called.');
             const currentSlide = pollContent.querySelector('.poll-slide');
             if (currentSlide) {
                 // Check if current text input is valid before animating away
@@ -654,18 +677,22 @@
                     const textInput = document.getElementById('currentTextInput');
                     if (!textInput || textInput.value.trim() === '') {
                         showMessageBox("Input Required", "Please fill in the required field before proceeding.");
+                        console.warn("Required text input is empty.");
                         return; // Stop function execution
                     }
                 }
 
                 currentExitAnimation = exitAnimations[Math.floor(Math.random() * exitAnimations.length)];
                 currentSlide.classList.add(currentExitAnimation, 'transitioning');
+                console.log('Applying exit animation:', currentExitAnimation);
 
                 currentSlide.addEventListener('animationend', () => {
+                    console.log('Exit animation ended. Moving to next question.');
                     currentQuestionIndex++;
                     renderQuestion();
                 }, { once: true });
             } else {
+                console.log('No current slide to animate out. Moving to next question directly.');
                 currentQuestionIndex++;
                 renderQuestion();
             }
@@ -675,16 +702,21 @@
          * Handles the transition to the previous question.
          */
         function prevQuestion() {
+            console.log('prevQuestion called.');
             const currentSlide = pollContent.querySelector('.poll-slide');
             if (currentSlide) {
                 currentExitAnimation = exitAnimations[Math.floor(Math.random() * exitAnimations.length)];
                 currentSlide.classList.add(currentExitAnimation, 'transitioning');
+                console.log('Applying exit animation for previous:', currentExitAnimation);
+
 
                 currentSlide.addEventListener('animationend', () => {
+                    console.log('Exit animation ended. Moving to previous question.');
                     currentQuestionIndex--;
                     renderQuestion();
                 }, { once: true });
             } else {
+                console.log('No current slide to animate out. Moving to previous question directly.');
                 currentQuestionIndex--;
                 renderQuestion();
             }
@@ -694,6 +726,7 @@
          * Displays the final screen and attempts submission.
          */
         function displayFinalScreen() {
+            console.log('displayFinalScreen called. Poll completed.');
             pollContent.innerHTML = `
                 <div id="finalScreen" class="animate-in-fade">
                     <p>Thank you for completing the poll!</p>
@@ -714,12 +747,14 @@
         async function submitDataToGoogleSheet() {
             const submissionStatusElement = document.getElementById('submissionStatus');
             submissionStatusElement.textContent = "Sending data...";
+            console.log('Attempting to submit data.');
 
             // Filter out empty optional answers if they are truly empty strings and not just placeholder
             const dataToSubmit = userAnswers.map(ans => ({
                 question: ans.question,
                 answer: ans.answer.trim() // Trim whitespace
             })).filter(ans => ans.answer !== ""); // Remove entries with empty answers (especially for optional fields)
+            console.log('Data prepared for submission:', dataToSubmit);
 
             if (appsScriptWebHookURL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE' || !appsScriptWebHookURL) {
                 submissionStatusElement.textContent = "Error: Google Apps Script Web App URL not configured. See console for details.";
@@ -763,22 +798,25 @@
 
         // Event Listeners
         prevBtn.addEventListener('click', () => {
+            console.log('Previous button clicked.');
             if (currentQuestionIndex > 0) {
                 prevQuestion();
             }
         });
 
         nextBtn.addEventListener('click', () => {
+            console.log('Next button clicked.');
             const currentQuestionData = shuffledQuestions[currentQuestionIndex];
             let isCurrentQuestionValid = false;
 
             if (currentQuestionData.type === 'radio') {
                 const selectedOption = pollContent.querySelector('input[name="pollOption"]:checked');
                 isCurrentQuestionValid = selectedOption !== null;
+                console.log('Radio question. Selected:', selectedOption ? selectedOption.value : 'None');
             } else if (currentQuestionData.type === 'text') {
                 const textInput = document.getElementById('currentTextInput');
-                // A text input is valid if it's optional, or if it's not optional and has content.
                 isCurrentQuestionValid = currentQuestionData.optional || (textInput && textInput.value.trim() !== '');
+                console.log('Text question. Input:', textInput ? textInput.value.trim() : 'N/A', 'Valid:', isCurrentQuestionValid);
             }
 
             if (isCurrentQuestionValid) {
@@ -798,6 +836,7 @@
                             type: currentQuestionData.type
                         });
                     }
+                    console.log('Saved text answer:', textInput.value);
                 }
 
                 if (currentQuestionIndex === shuffledQuestions.length - 1) {
@@ -807,6 +846,7 @@
                 }
             } else {
                 showMessageBox("Selection Required", "Please answer the current question before proceeding.");
+                console.warn("Validation failed: No answer selected or text input empty.");
             }
         });
 
@@ -814,8 +854,17 @@
 
         // Initialize the poll when the window loads
         window.onload = function() {
+            console.log('Window loaded. Initializing poll.');
             // Shuffle questions once at the start
             shuffledQuestions = shuffleArray([...questions]);
+            console.log('Questions shuffled. Total questions:', shuffledQuestions.length);
+
+            // Check if pollContent exists immediately after DOM is ready
+            if (!pollContent) {
+                console.error("Critical: 'pollContent' element is null on window.onload. Cannot proceed with rendering. Please ensure the HTML element with id 'pollContent' exists and is correctly spelled.");
+                showMessageBox("Initialization Error", "The main poll content area could not be found. This indicates a problem with the HTML structure. Please check the browser's developer console for more details.");
+                return; // Stop further execution if main container is missing
+            }
             renderQuestion();
         };
 
