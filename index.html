@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #000000; /* Light gray background */
+            background-color: #f0f4f8; /* Light gray background */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -395,22 +395,6 @@
                 placeholder: "Enter your ID"
             },
             {
-                type: "text",
-                questionText: "What is your phone number? (Optional, for contact)",
-                placeholder: "e.g., 555-123-4567",
-                optional: true // Mark as optional
-            },
-            {
-                type: "radio",
-                questionText: "What's your favorite season of the year?",
-                options: ["Spring", "Summer", "Autumn", "Winter"]
-            },
-            {
-                type: "radio",
-                questionText: "Which fictional character would you most like to have as a friend?",
-                options: ["Gandalf", "Hermione Granger", "Iron Man", "Darth Vader"]
-            },
-            {
                 type: "radio",
                 questionText: "What is your favorite video game genre?",
                 options: ["RPG", "FPS", "Strategy", "Puzzle", "Sports"]
@@ -424,16 +408,6 @@
                 type: "radio",
                 questionText: "What's your preferred way to relax after a long day?",
                 options: ["Reading a book", "Watching TV/Movies", "Exercising", "Listening to music"]
-            },
-            {
-                type: "radio",
-                questionText: "Which type of cuisine do you enjoy the most?",
-                options: ["Italian", "Mexican", "Asian (e.g., Sushi, Thai)", "Indian"]
-            },
-            {
-                type: "radio",
-                questionText: "Are you an early bird or a night owl?",
-                options: ["Early Bird", "Night Owl"]
             }
         ];
 
@@ -441,8 +415,7 @@
         let currentQuestionIndex = 0;
         let userAnswers = []; // Stores answers: { questionIndex: N, question: "Q", answer: "A", type: "radio" | "text" }
         let shuffledQuestions = [];
-        let appsScriptWebHookURL = 'https://script.google.com/macros/s/AKfycbwF7bS1CZZlv07K7UxFO1767V9VbOQWYw7OMGg2-vtX5cb9vZN34s3zCbXWiMgm-Ohy_Q/exec
-'; // *** IMPORTANT: REPLACE THIS WITH YOUR DEPLOYED WEB APP URL ***
+        let appsScriptWebHookURL = 'https://script.google.com/macros/s/AKfycbwF7bS1CZZlv07K7UxFO1767V9VbOQWYw7OMGg2-vtX5cb9vZN34s3zCbXWiMgm-Ohy_Q/exec'; // *** IMPORTANT: REPLACE THIS WITH YOUR DEPLOYED WEB APP URL ***
 
         // DOM elements
         const pollContent = document.getElementById('pollContent');
