@@ -1,123 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Question Poll</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light blue-gray background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        /* Custom styles for focus states and shadows */
-        textarea:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Blue focus ring */
-        }
-    </style>
+  <title>GitHub Hosted Poll</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #4285f4;
+      text-align: center;
+    }
+    .poll-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      min-height: 80px;
+      resize: vertical;
+    }
+    button {
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #3367d6;
+    }
+    #success-message {
+      display: none;
+      color: #0f9d58;
+      text-align: center;
+      margin-top: 20px;
+    }
+    #error-message {
+      display: none;
+      color: #db4437;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl w-full max-w-lg">
-        <h1 class="text-3xl md:text-4xl font-extrabold text-center text-gray-900 mb-6">Open Question Poll</h1>
-        <p class="text-gray-600 text-center mb-8">Please answer the following questions to help us understand your thoughts.</p>
-
-        <form id="pollForm" class="space-y-6">
-            <div>
-                <label for="question1" class="block text-gray-800 text-lg font-semibold mb-2">
-                    1. What is your primary motivation for using this product/service?
-                </label>
-                <textarea id="question1" name="question1" rows="4"
-                          class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm
-                                 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out
-                                 text-gray-700 resize-y"
-                          placeholder="Type your answer here..." required></textarea>
-            </div>
-
-            <div>
-                <label for="question2" class="block text-gray-800 text-lg font-semibold mb-2">
-                    2. How do you think we can improve your experience?
-                </label>
-                <textarea id="question2" name="question2" rows="4"
-                          class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm
-                                 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out
-                                 text-gray-700 resize-y"
-                          placeholder="Type your answer here..." required></textarea>
-            </div>
-
-            <button type="submit"
-                    class="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold py-3 px-6 rounded-lg
-                           shadow-md hover:from-blue-700 hover:to-blue-900 focus:outline-none focus:ring-4
-                           focus:ring-blue-500 focus:ring-opacity-75 transition duration-200 ease-in-out
-                           transform hover:-translate-y-1 hover:scale-105">
-                Submit Responses
-            </button>
-        </form>
-
-        <div id="responseMessage" class="mt-8 p-4 rounded-lg text-center font-medium hidden"></div>
+<body>
+  <div class="poll-container">
+    <h1>GitHub Hosted Survey</h1>
+    <form id="pollForm">
+      <div class="form-group">
+        <label for="question1">1. What do you think about our service?</label>
+        <textarea id="question1" name="question1" required></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="question2">2. How can we improve our product?</label>
+        <textarea id="question2" name="question2" required></textarea>
+      </div>
+      
+      <button type="submit">Submit Responses</button>
+    </form>
+    
+    <div id="success-message">
+      <h2>Thank you for your feedback!</h2>
+      <p>Your responses have been recorded.</p>
     </div>
+    
+    <div id="error-message">
+      <h2>Error Submitting Form</h2>
+      <p id="error-text"></p>
+    </div>
+  </div>
 
-    <script>
-        document.getElementById('pollForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            const form = event.target;
-            const formData = new FormData(form);
-            const responseMessageDiv = document.getElementById('responseMessage');
-
-            // --- IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR DEPLOYED GOOGLE APPS SCRIPT URL ---
-            // Follow the instructions below to get this URL after creating your Apps Script.
-            const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbyvLojWFlBR9Y7tmQE345Ei0I50NpLko31fWQUqfSOV1XDkf5zzyqDYDdjEKfCCwHab/exec
-';
-            // -----------------------------------------------------------------------------------
-
-            if (googleAppsScriptURL === 'https://script.google.com/macros/s/AKfycbyvLojWFlBR9Y7tmQE345Ei0I50NpLko31fWQUqfSOV1XDkf5zzyqDYDdjEKfCCwHab/exec
-') {
-                responseMessageDiv.textContent = 'Error: Please update the script with your Google Apps Script Web App URL.';
-                responseMessageDiv.className = 'mt-8 p-4 rounded-lg text-center font-medium bg-red-100 text-red-700 block';
-                return;
-            }
-
-            // Convert FormData to a plain object for JSON serialization
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
-            }
-
-            responseMessageDiv.textContent = 'Submitting your responses...';
-            responseMessageDiv.className = 'mt-8 p-4 rounded-lg text-center font-medium bg-blue-100 text-blue-700 block';
-
-            try {
-                const response = await fetch(googleAppsScriptURL, {
-                    method: 'POST',
-                    mode: 'no-cors', // Important for Google Apps Script
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded', // Required for doPost(e)
-                    },
-                    body: new URLSearchParams(data).toString(), // URL-encode the data
-                });
-
-                // Google Apps Script fetch with 'no-cors' doesn't allow reading response status/body directly.
-                // We assume success if no network error occurred.
-                responseMessageDiv.textContent = 'Thank you for your responses! They have been submitted.';
-                responseMessageDiv.className = 'mt-8 p-4 rounded-lg text-center font-medium bg-green-100 text-green-700 block';
-                form.reset(); // Clear the form after successful submission
-
-            } catch (error) {
-                console.error('Error submitting poll:', error);
-                responseMessageDiv.textContent = 'There was an error submitting your responses. Please try again.';
-                responseMessageDiv.className = 'mt-8 p-4 rounded-lg text-center font-medium bg-red-100 text-red-700 block';
-            }
+  <script>
+    document.getElementById('pollForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const form = e.target;
+      const formData = {
+        question1: form.question1.value,
+        question2: form.question2.value,
+        timestamp: new Date().toISOString()
+      };
+      
+      try {
+        // Replace with your deployed Apps Script Web App URL
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbxkbMMlQvCB2nPOzLXzulMGgIxOyo4oI0ZBdT9NG-UKFrFgWFCZnvMmBn81lopJ-PPa/exec';
+        
+        const response = await fetch(scriptUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+          redirect: 'follow'
         });
-    </script>
+        
+        // Handle the response from Apps Script
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          document.getElementById('pollForm').style.display = 'none';
+          document.getElementById('success-message').style.display = 'block';
+        } else {
+          throw new Error(result.message || 'Unknown error occurred');
+        }
+      } catch (error) {
+        document.getElementById('error-text').textContent = error.message;
+        document.getElementById('error-message').style.display = 'block';
+        console.error('Error:', error);
+      }
+    });
+  </script>
 </body>
 </html>
-
