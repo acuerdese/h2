@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Working Poll Form</title>
+  <title>Poll Form</title>
   <style>
     /* Your existing styles */
   </style>
@@ -10,54 +10,56 @@
   <!-- Your existing form HTML -->
   
   <script>
+    // Handle the message from the iframe
+    window.addEventListener('message', function(event) {
+      if (event.data === 'formSubmissionSuccess') {
+        document.getElementById('pollForm').style.display = 'none';
+        document.getElementById('success-message').style.display = 'block';
+      } else if (event.data === 'formSubmissionError') {
+        document.getElementById('error-text').textContent = 'Submission failed. Please try again.';
+        document.getElementById('error-message').style.display = 'block';
+      }
+    });
+
     document.getElementById('pollForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
       const form = e.target;
-      const formData = new FormData();
-      formData.append('question1', form.question1.value);
-      formData.append('question2', form.question2.value);
       
-      // Use a proxy if needed (see below)
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbw5mV8zii8Pj_eW7em9hUUkUmRMRJQZ9t6Iw-CVd8pAOc4-_FIB-Qye9YyEclG4uunt/exec';
-      
-      // Create a hidden iframe to submit the form
+      // Create a hidden iframe
       const iframe = document.createElement('iframe');
       iframe.name = 'hiddenFrame';
       iframe.style.display = 'none';
       
-      // Create a form to submit to the iframe
+      // Create a form for submission
       const hiddenForm = document.createElement('form');
-      hiddenForm.action = scriptUrl;
+      hiddenForm.action = 'https://script.google.com/macros/s/AKfycby1fPiJmK7nwfE9gn_thLJe5LP9IEjnQDfH9zWcr8rrGRf2m1H6tcOigDidZpUj5P8H/exec';
       hiddenForm.method = 'POST';
       hiddenForm.target = 'hiddenFrame';
       
       // Add form data
-      const input1 = document.createElement('input');
-      input1.type = 'hidden';
-      input1.name = 'question1';
-      input1.value = form.question1.value;
-      hiddenForm.appendChild(input1);
+      const inputs = [
+        { name: 'question1', value: form.question1.value },
+        { name: 'question2', value: form.question2.value }
+      ];
       
-      const input2 = document.createElement('input');
-      input2.type = 'hidden';
-      input2.name = 'question2';
-      input2.value = form.question2.value;
-      hiddenForm.appendChild(input2);
+      inputs.forEach(input => {
+        const element = document.createElement('input');
+        element.type = 'hidden';
+        element.name = input.name;
+        element.value = input.value;
+        hiddenForm.appendChild(element);
+      });
       
       document.body.appendChild(iframe);
       document.body.appendChild(hiddenForm);
       hiddenForm.submit();
       
-      // Show success message (we can't get response due to CORS)
-      document.getElementById('pollForm').style.display = 'none';
-      document.getElementById('success-message').style.display = 'block';
-      
-      // Clean up after a delay
+      // Clean up after submission
       setTimeout(() => {
         document.body.removeChild(iframe);
         document.body.removeChild(hiddenForm);
-      }, 5000);
+      }, 3000);
     });
   </script>
 </body>
