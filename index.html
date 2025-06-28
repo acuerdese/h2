@@ -1,47 +1,100 @@
-<script>
-document.getElementById('pollForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
-  // Get form data
-  const formData = {
-    question1: document.getElementById('question1').value,
-    question2: document.getElementById('question2').value,
-    timestamp: new Date().toISOString()
-  };
-  
-  // Create a hidden iframe
-  const iframe = document.createElement('iframe');
-  iframe.name = 'hiddenFrame';
-  iframe.style.display = 'none';
-  
-  // Create a form to submit to the iframe
-  const hiddenForm = document.createElement('form');
-  hiddenForm.action = 'https://script.google.com/macros/s/AKfycby218rKKTEs0GxtoWOL9lq8oDxpYcxzu9Ydx6Jeh--jW3I957clBKnSO1-Owm4ZggKg/exec';
-  hiddenForm.method = 'POST';
-  hiddenForm.target = 'hiddenFrame';
-  
-  // Add form data as hidden inputs
-  Object.entries(formData).forEach(([key, value]) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key;
-    input.value = value;
-    hiddenForm.appendChild(input);
-  });
-  
-  // Add to DOM and submit
-  document.body.appendChild(iframe);
-  document.body.appendChild(hiddenForm);
-  hiddenForm.submit();
-  
-  // Show success message
-  document.getElementById('pollForm').style.display = 'none';
-  document.getElementById('success-message').style.display = 'block';
-  
-  // Clean up after 3 seconds
-  setTimeout(() => {
-    document.body.removeChild(iframe);
-    document.body.removeChild(hiddenForm);
-  }, 3000);
-});
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Poll</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 10px;
+            padding: 10px;
+            display: none;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+    </style>
+    <script src="https://wzrd.in/standalone/formdata-polyfill"></script>
+    <script src="https://wzrd.in/standalone/promise-polyfill@latest"></script>
+    <script src="https://wzrd.in/standalone/whatwg-fetch@latest"></script>
+</head>
+<body>
+    <h1>Feedback Poll</h1>
+    <form name="submit-to-google-sheet">
+        <div class="form-group">
+            <label for="question1">What do you like most about our website?</label>
+            <textarea name="Question1" id="question1" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="question2">What improvements would you suggest?</label>
+            <textarea name="Question2" id="question2" rows="4" required></textarea>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="message" class="message"></div>
+
+    <script>
+        const scriptURL = 'YOUR_WEBAPP_URL'; // Replace with your Google Apps Script Web App URL
+        const form = document.forms['submit-to-google-sheet'];
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            messageDiv.style.display = 'none';
+            messageDiv.classList.remove('success', 'error');
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        messageDiv.textContent = 'Thank you! Your response has been recorded.';
+                        messageDiv.classList.add('success');
+                        form.reset();
+                    } else {
+                        messageDiv.textContent = 'Error: ' + data.error;
+                        messageDiv.classList.add('error');
+                    }
+                    messageDiv.style.display = 'block';
+                })
+                .catch(error => {
+                    messageDiv.textContent = 'Error: ' + error.message;
+                    messageDiv.classList.add('error');
+                    messageDiv.style.display = 'block';
+                });
+        });
+    </script>
+</body>
+</html>
