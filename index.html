@@ -743,9 +743,9 @@
             })).filter(ans => ans.answer !== ""); // Remove entries with empty answers (especially for optional fields)
             console.log('Data prepared for submission:', dataToSubmit);
 
-            if (appsScriptWebHookURL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE' || !appsScriptWebHookURL) {
+            if (appsScriptWebHookURL === 'https://script.google.com/macros/s/AKfycbxmzNw89bkKek28Msr8nIVMPA7wXCMzB1KkeM5YBNT_-yFJGTmCem26B92lkeuih6qW/exec' || !appsScriptWebHookURL) {
                 submissionStatusElement.textContent = "Error: Google Apps Script Web App URL not configured. See console for details.";
-                console.error("Google Apps Script Web App URL is not set. Please replace 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE' in the JavaScript code with your deployed Apps Script URL.");
+                console.error("Google Apps Script Web App URL is not set. Please replace 'https://script.google.com/macros/s/AKfycbxmzNw89bkKek28Msr8nIVMPA7wXCMzB1KkeM5YBNT_-yFJGTmCem26B92lkeuih6qW/exec' in the JavaScript code with your deployed Apps Script URL.");
                 showMessageBox(
                     "Configuration Error",
                     "The Google Apps Script URL has not been set. Please follow the instructions to deploy your Apps Script and update the HTML file with the correct URL."
