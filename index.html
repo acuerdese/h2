@@ -1,400 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Project Poll</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .poll-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transform: translateY(0);
-            transition: all 0.3s ease;
-        }
-
-        .poll-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        .poll-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .poll-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-
-        .poll-subtitle {
-            color: #666;
-            font-size: 1.1rem;
-            opacity: 0.8;
-        }
-
-        .question-group {
-            margin-bottom: 30px;
-            opacity: 0;
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .question-group:nth-child(2) { animation-delay: 0.1s; }
-        .question-group:nth-child(3) { animation-delay: 0.2s; }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .question-label {
-            display: block;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-        }
-
-        .question-input {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
-            resize: vertical;
-            min-height: 60px;
-            font-family: inherit;
-        }
-
-        .question-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            background: rgba(255, 255, 255, 1);
-            transform: scale(1.02);
-        }
-
-        .question-input::placeholder {
-            color: #999;
-            font-style: italic;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 16px 32px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .submit-btn:hover::before {
-            left: 100%;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .success-message {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #56ab2f, #a8e6cf);
-            color: white;
-            border-radius: 12px;
-            margin-top: 20px;
-            font-weight: 600;
-        }
-
-        .error-message {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #ff6b6b, #ffa8a8);
-            color: white;
-            border-radius: 12px;
-            margin-top: 20px;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .poll-container {
-                padding: 30px 20px;
-                margin: 10px;
-            }
-            
-            .poll-title {
-                font-size: 2rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/ract-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/Babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="poll-container">
-        <div class="poll-header">
-            <h1 class="poll-title" id="pollTitle">Project Feedback Poll</h1>
-            <p class="poll-subtitle" id="pollSubtitle">Help us improve by sharing your thoughts</p>
-        </div>
+<body class="bg-gray-100 font-sans">
+  <div id="root"></div>
 
-        <form id="pollForm">
-            <div class="question-group">
-                <label class="question-label" id="question1Label">What features would you like to see added?</label>
-                <textarea 
-                    class="question-input" 
-                    id="question1" 
-                    name="question1"
-                    placeholder="Share your ideas for new features..."
-                    required
-                ></textarea>
+  <script type="text/babel">
+    function Header() {
+      return (
+        <header class="bg-white shadow">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-900">Marketplace</h1>
+            <nav class="flex space-x-4">
+              <a href="#" class="text-gray-600 hover:text-gray-900">Home</a>
+              <a href="#" class="text-gray-600 hover:text-gray-900">Shop</a>
+              <a href="#" class="text-gray-600 hover:text-gray-900">Cart</a>
+              <a href="#" class="text-gray-600 hover:text-gray-900">Account</a>
+            </nav>
+            <div class="flex space-x-2">
+              <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Sign In</button>
+              <button class="bg-gray-200 text-gray-900 px-4 py-2 rounded hover:bg-gray-300">Sign Up</button>
             </div>
+          </div>
+        </header>
+      );
+    }
 
-            <div class="question-group">
-                <label class="question-label" id="question2Label">How can we improve the user experience?</label>
-                <textarea 
-                    class="question-input" 
-                    id="question2" 
-                    name="question2"
-                    placeholder="Tell us about your experience and suggestions..."
-                    required
-                ></textarea>
+    function Hero() {
+      return (
+        <div class="bg-blue-50 py-12">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Discover Unique Handmade Goods</h2>
+            <p class="text-lg text-gray-600 mb-6">Shop from talented artisans around the world</p>
+            <input
+              type="text"
+              placeholder="Search for items..."
+              class="w-full max-w-md mx-auto p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            />
+          </div>
+        </div>
+      );
+    }
+
+    function ProductCard({ title, price, image }) {
+      return (
+        <div class="bg-white rounded-lg shadow hover:shadow-lg transition">
+          <img src={image} alt={title} class="w-full h-48 object-cover rounded-t-lg" />
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-gray-900">{title}</h3>
+            <p class="text-gray-600">${price}</p>
+            <button class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Add to Cart</button>
+          </div>
+        </div>
+      );
+    }
+
+    function ProductGrid() {
+      const products = [
+        { title: "Handmade Ceramic Mug", price: 24.99, image: "https://via.placeholder.com/300x200?text=Mug" },
+        { title: "Woven Wall Hanging", price: 39.99, image: "https://via.placeholder.com/300x200?text=Wall+Hanging" },
+        { title: "Leather Journal", price: 29.99, image: "https://via.placeholder.com/300x200?text=Journal" },
+        { title: "Knitted Scarf", price: 19.99, image: "https://via.placeholder.com/300x200?text=Scarf" },
+      ];
+
+      return (
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Items</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {products.map((product, index) => (
+              <ProductCard key={index} title={product.title} price={product.price} image={product.image} />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    function Footer() {
+      return (
+        <footer class="bg-gray-800 text-white py-8">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div>
+                <h3 class="text-lg font-semibold">Marketplace</h3>
+                <p class="mt-2 text-gray-400">Connecting artisans and buyers worldwide.</p>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold">Links</h3>
+                <ul class="mt-2 space-y-2">
+                  <li><a href="#" class="text-gray-400 hover:text-white">About</a></li>
+                  <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                  <li><a href="#" class="text-gray-400 hover:text-white">Terms</a></li>
+                </ul>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold">Connect</h3>
+                <ul class="mt-2 space-y-2">
+                  <li><a href="#" class="text-gray-400 hover:text-white">Twitter</a></li>
+                  <li><a href="#" class="text-gray-400 hover:text-white">Instagram</a></li>
+                  <li><a href="#" class="text-gray-400 hover:text-white">Facebook</a></li>
+                </ul>
+              </div>
             </div>
+            <p class="mt-8 text-center text-gray-400">&copy; 2025 Marketplace. All rights reserved.</p>
+          </div>
+        </footer>
+      );
+    }
 
-            <button type="submit" class="submit-btn" id="submitBtn">
-                Submit Feedback
-            </button>
-        </form>
-
-        <div class="success-message" id="successMessage">
-            Thank you! Your feedback has been submitted successfully.
+    function App() {
+      return (
+        <div>
+          <Header />
+          <Hero />
+          <ProductGrid />
+          <Footer />
         </div>
+      );
+    }
 
-        <div class="error-message" id="errorMessage">
-            There was an error submitting your feedback. Please try again.
-        </div>
-    </div>
-
-    <script>
-        // Configuration - will be loaded from XML
-        let pollConfig = {
-            title: "Project Feedback Poll",
-            subtitle: "Help us improve by sharing your thoughts",
-            questions: [
-                {
-                    id: "question1",
-                    label: "What features would you like to see added?",
-                    placeholder: "Share your ideas for new features..."
-                },
-                {
-                    id: "question2", 
-                    label: "How can we improve the user experience?",
-                    placeholder: "Tell us about your experience and suggestions..."
-                }
-            ],
-            googleAppsScriptUrl: "https://script.google.com/macros/s/AKfycbxbRcAe0S5ONJ8sHwUcBc99_h36aylV18qps1jgSNFy7aYZndwph7x-Lw9l_v8fulFK/exec"
-        };
-
-        // Load configuration from XML file
-        async function loadPollConfig() {
-            try {
-                const response = await fetch('poll-config.xml');
-                const xmlText = await response.text();
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-                
-                // Parse XML configuration
-                const title = xmlDoc.querySelector('title')?.textContent;
-                const subtitle = xmlDoc.querySelector('subtitle')?.textContent;
-                const scriptUrl = xmlDoc.querySelector('googleAppsScriptUrl')?.textContent;
-                
-                if (title) pollConfig.title = title;
-                if (subtitle) pollConfig.subtitle = subtitle;
-                if (scriptUrl) pollConfig.googleAppsScriptUrl = scriptUrl;
-                
-                // Parse questions
-                const questions = xmlDoc.querySelectorAll('question');
-                if (questions.length > 0) {
-                    pollConfig.questions = Array.from(questions).map(q => ({
-                        id: q.getAttribute('id'),
-                        label: q.querySelector('label')?.textContent,
-                        placeholder: q.querySelector('placeholder')?.textContent
-                    }));
-                }
-                
-                updatePollInterface();
-            } catch (error) {
-                console.log('Using default configuration');
-                updatePollInterface();
-            }
-        }
-
-        // Update the poll interface with configuration
-        function updatePollInterface() {
-            document.getElementById('pollTitle').textContent = pollConfig.title;
-            document.getElementById('pollSubtitle').textContent = pollConfig.subtitle;
-            
-            pollConfig.questions.forEach((q, index) => {
-                const label = document.getElementById(`question${index + 1}Label`);
-                const input = document.getElementById(`question${index + 1}`);
-                
-                if (label && q.label) label.textContent = q.label;
-                if (input && q.placeholder) input.placeholder = q.placeholder;
-            });
-        }
-
-        // Handle form submission
-        document.getElementById('pollForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const successMsg = document.getElementById('successMessage');
-            const errorMsg = document.getElementById('errorMessage');
-            
-            // Validate Google Apps Script URL
-            if (!pollConfig.googleAppsScriptUrl || pollConfig.googleAppsScriptUrl === 'https://script.google.com/macros/s/AKfycbxbRcAe0S5ONJ8sHwUcBc99_h36aylV18qps1jgSNFy7aYZndwph7x-Lw9l_v8fulFK/exec') {
-                errorMsg.textContent = 'Please configure the Google Apps Script URL in poll-config.xml';
-                errorMsg.style.display = 'block';
-                return;
-            }
-            
-            // Disable submit button
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-            
-            // Hide previous messages
-            successMsg.style.display = 'none';
-            errorMsg.style.display = 'none';
-            
-            try {
-                const formData = new FormData(this);
-                const data = Object.fromEntries(formData);
-                data.timestamp = new Date().toISOString();
-                data.userAgent = navigator.userAgent;
-                
-                console.log('Submitting data:', data);
-                console.log('To URL:', pollConfig.googleAppsScriptUrl);
-                
-                // Try with fetch first
-                const response = await fetch(pollConfig.googleAppsScriptUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                    mode: 'cors'
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log('Response:', result);
-                    
-                    if (result.status === 'success') {
-                        successMsg.style.display = 'block';
-                        this.reset();
-                    } else {
-                        throw new Error(result.message || 'Server returned error status');
-                    }
-                } else {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-            } catch (error) {
-                console.error('Fetch error:', error);
-                
-                // Fallback: try with no-cors mode (won't get response but might work)
-                try {
-                    await fetch(pollConfig.googleAppsScriptUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
-                    });
-                    
-                    // With no-cors, we can't read the response, so assume success
-                    successMsg.textContent = 'Feedback submitted! (Note: Response confirmation unavailable due to CORS)';
-                    successMsg.style.display = 'block';
-                    this.reset();
-                    
-                } catch (fallbackError) {
-                    console.error('Fallback error:', fallbackError);
-                    errorMsg.textContent = `Submission failed: ${error.message}. Please check the Google Apps Script URL and deployment settings.`;
-                    errorMsg.style.display = 'block';
-                }
-            } finally {
-                // Re-enable submit button
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit Feedback';
-            }
-        });
-
-        // Initialize poll when page loads
-        loadPollConfig();
-    </script>
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
 </body>
 </html>
