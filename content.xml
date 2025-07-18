@@ -38,102 +38,34 @@
     <link>
       <title>Home</title>
       <description>Welcome to our marketplace, your destination for unique handmade goods.</description>
-      <link>
-        <text>Learn More</text>
-        <url>#home</url>
-      </link>
-      <link>
-        <text>Explore</text>
-        <url>#products</url>
-      </link>
-      <carousel>
-        <image>
-          <url>https://images.unsplash.com/photo-1600585154340-be6161a56a0c</url>
-          <title>Pottery</title>
-        </image>
-        <image>
-          <url>https://images.unsplash.com/photo-1513519245088-0e12902e5a38</url>
-          <title>Decor</title>
-        </image>
-        <image>
-          <url>https://images.unsplash.com/photo-1590402494587-44b67d99b33d</url>
-          <title>Textiles</title>
-        </image>
-      </carousel>
+      <image>
+        <url>https://images.unsplash.com/photo-1600585154340-be6161a56a0c</url>
+        <title>Pottery</title>
+      </image>
     </link>
     <link>
       <title>Shop</title>
       <description>Browse a wide selection of artisan products from global creators.</description>
-      <link>
-        <text>View Categories</text>
-        <url>#shop</url>
-      </link>
-      <link>
-        <text>New Arrivals</text>
-        <url>#products</url>
-      </link>
-      <carousel>
-        <image>
-          <url>https://images.unsplash.com/photo-1551488831-68b4d0c075c0</url>
-          <title>Jewelry</title>
-        </image>
-        <image>
-          <url>https://images.unsplash.com/photo-1512546148165-e50d714a565a</url>
-          <title>Journal</title>
-        </image>
-        <image>
-          <url>https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8</url>
-          <title>Scarf</title>
-        </image>
-      </carousel>
+      <image>
+        <url>https://images.unsplash.com/photo-1551488831-68b4d0c075c0</url>
+        <title>Jewelry</title>
+      </image>
     </link>
     <link>
       <title>Cart</title>
       <description>Review and manage your selected items before checkout.</description>
-      <link>
-        <text>View Cart</text>
-        <url>#cart</url>
-      </link>
-      <link>
-        <text>Checkout</text>
-        <url>#cart</url>
-      </link>
-      <carousel>
-        <image>
-          <url>https://images.unsplash.com/photo-1572635196237-14b3f81f6b07</url>
-          <title>Cart Items</title>
-        </image>
-        <image>
-          <url>https://images.unsplash.com/photo-1591337676887-a217a6970a8a</url>
-          <title>Checkout</title>
-        </image>
-        <image>
-          <url>https://images.unsplash.com/photo-1556740739-887f6717d7e4</url>
-          <title>Payment</title>
-        </image>
-      </carousel>
+      <image>
+        <url>https://images.unsplash.com/photo-1572635196237-14b3f81f6b07</url>
+        <title>Cart Items</title>
+      </image>
     </link>
     <link>
       <title>Account</title>
       <description>Manage your profile, orders, and preferences in one place.</description>
-      <link>
-        <text>Register</text>
-        <url>#account</url>
-      </link>
-      <carousel>
-        <image>
-          <url>https://images.unsplash.com/photo-1516321315098-3a56f2e2b456</url>
-          <title>Profile</title>
-        </image>
-        <image>
-          <url>https://images.unsplash.com/photo-1537511446984-935f663eb5f0</url>
-          <title>Orders</title>
-        </image>
-        <image>
-          <url>https://images.unsplash.com/photo-1529119570192-7d3f0e87bc00</url>
-          <title>Settings</title>
-        </image>
-      </carousel>
+      <image>
+        <url>https://images.unsplash.com/photo-1516321315098-3a56f2e2b456</url>
+        <title>Profile</title>
+      </image>
     </link>
   </headerLinks>
 </content>
