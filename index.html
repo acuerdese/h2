@@ -5,14 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Marketplace</title>
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/ract-dom.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/Babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
-  <div id="root"></div>
+  <div id="root">
+    <!-- Fallback content if React fails to load -->
+    <div class="text-center p-4 text-red-600">
+      Loading Marketplace... If this message persists, ensure JavaScript is enabled and check your internet connection.
+    </div>
+  </div>
 
   <script type="text/babel">
+    // Check if React and ReactDOM are loaded
+    if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
+      console.error('React or ReactDOM failed to load. Check CDN URLs and network.');
+    }
+
     function Header() {
       return (
         <header class="bg-white shadow">
@@ -108,7 +118,7 @@
                 </ul>
               </div>
             </div>
-            <p class="mt-8 text-center text-gray-400">&copy; 2025 Marketplace. All rights reserved.</p>
+            <p class="mt-8 text-center text-gray-400">© 2025 Marketplace. All rights reserved.</p>
           </div>
         </footer>
       );
@@ -125,8 +135,12 @@
       );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    try {
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    } catch (error) {
+      console.error('Error rendering React app:', error);
+    }
   </script>
 </body>
 </html>
