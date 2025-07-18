@@ -143,6 +143,72 @@
       );
     }
 
+    function MiniCarousel({ images }) {
+      const [currentSlide, setCurrentSlide] = React.useState(0);
+
+      React.useEffect(() => {
+        const interval = setInterval(() => {
+          setCurrentSlide((prev) => (prev + 1) % images.length);
+        }, 3000);
+        return () => clearInterval(interval);
+      }, [images]);
+
+      const goToSlide = (index) => setCurrentSlide(index);
+
+      return (
+        <div class="relative h-32 overflow-hidden rounded-lg">
+          {images.map((image, index) => (
+            <div
+              key={index}
+              class={`absolute inset-0 transition-opacity duration-500 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+            >
+              <img src={image.url} alt={image.title} class="w-full h-full object-cover" />
+            </div>
+          ))}
+          <div class="absolute bottom-2 left-0 right-0 flex justify-center space-x-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                class={`w-2 h-2 rounded-full ${index === currentSlide ? 'bg-blue-600' : 'bg-gray-400'}`}
+                onClick={() => goToSlide(index)}
+              ></button>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    function HeaderLinkGrid({ headerLinks }) {
+      return (
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Explore Our Features</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {headerLinks.map((link, index) => (
+              <div key={index} class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">{link.title}</h3>
+                <p class="text-gray-600 mb-4">{link.description}</p>
+                <MiniCarousel images={link.carousel} />
+                <div class="mt-4 flex space-x-4">
+                  <a
+                    href={link.links[0].url}
+                    class="text-blue-600 hover:text-blue-800 underline"
+                  >
+                    {link.links[0].text}
+                  </a>
+                  <a
+                    href={link.links[1].url}
+                    class="text-blue-600 hover:text-blue-800 underline"
+                  >
+                    {link.links[1].text}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     function ProductCard({ title, price, image }) {
       return (
         <div class="bg-white rounded-lg shadow hover:shadow-lg transition">
@@ -228,7 +294,7 @@
     }
 
     function App() {
-      const [data, setData] = React.useState({ carousel: [], services: [] });
+      const [data, setData] = React.useState({ carousel: [], services: [], headerLinks: [] });
       const [searchTerm, setSearchTerm] = React.useState('');
 
       React.useEffect(() => {
@@ -247,7 +313,19 @@
               title: service.querySelector('title').textContent,
               description: service.querySelector('description').textContent
             }));
-            setData({ carousel, services });
+            const headerLinks = Array.from(xml.querySelectorAll('headerLinks link')).map(link => ({
+              title: link.querySelector('title').textContent,
+              description: link.querySelector('description').textContent,
+              links: Array.from(link.querySelectorAll('link')).map(l => ({
+                text: l.querySelector('text').textContent,
+                url: l.querySelector('url').textContent
+              })),
+              carousel: Array.from(link.querySelectorAll('carousel image')).map(img => ({
+                url: img.querySelector('url').textContent,
+                title: img.querySelector('title').textContent
+              }))
+            }));
+            setData({ carousel, services, headerLinks });
           })
           .catch(error => {
             console.error('Error fetching XML:', error);
@@ -258,9 +336,63 @@
                 { image: "https://images.unsplash.com/photo-1590402494587-44b67d99b33d", title: "Eco-Friendly Textiles", description: "Sustainable fabrics for modern living." }
               ],
               services: [
-                { icon: "https://images.unsplash.com/photo-1516321315098-3a56f2e2b456", title: "Fast Shipping", description: "Get your orders delivered in record time." },
-                { icon: "https://images.unsplash.com/photo-1516321315098-3a56f2e2b456", title: "Secure Payments", description: "Shop with confidence using our secure checkout." },
+                { icon: "https://images.unsplash.com/photo-1585060544812-6b45742d762f", title: "Fast Shipping", description: "Get your orders delivered in record time." },
+                { icon: "https://images.unsplash.com/photo-1556740739-887f6717d7e4", title: "Secure Payments", description: "Shop with confidence using our secure checkout." },
                 { icon: "https://images.unsplash.com/photo-1516321315098-3a56f2e2b456", title: "Customer Support", description: "24/7 assistance for all your needs." }
+              ],
+              headerLinks: [
+                {
+                  title: "Home",
+                  description: "Welcome to our marketplace, your destination for unique handmade goods.",
+                  links: [
+                    { text: "Learn More", url: "#" },
+                    { text: "Explore", url: "#" }
+                  ],
+                  carousel: [
+                    { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", title: "Pottery" },
+                    { url: "https://images.unsplash.com/photo-1513519245088-0e12902e5石", title: "Decor" },
+                    { url: "https://images.unsplash.com/photo-1590402494587-44b67d99b33d", title: "Textiles" }
+                  ]
+                },
+                {
+                  title: "Shop",
+                  description: "Browse a wide selection of artisan products from global creators.",
+                  links: [
+                    { text: "View Categories", url: "#" },
+                    { text: "New Arrivals", url: "#" }
+                  ],
+                  carousel: [
+                    { url: "https://images.unsplash.com/photo-1551488831-68b4d0c075c0", title: "Jewelry" },
+                    { url: "https://images.unsplash.com/photo-1512546148165-e50d714a565a", title: "Journal" },
+                    { url: "https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8", title: "Scarf" }
+                  ]
+                },
+                {
+                  title: "Cart",
+                  description: "Review and manage your selected items before checkout.",
+                  links: [
+                    { text: "View Cart", url: "#" },
+                    { text: "Checkout", url: "#" }
+                  ],
+                  carousel: [
+                    { url: "https://images.unsplash.com/photo-1572635196237-14b3f81f6b07", title: "Cart Items" },
+                    { url: "https://images.unsplash.com/photo-1591337676887-a217a6970a8a", title: "Checkout" },
+                    { url: "https://images.unsplash.com/photo-1556740739-887f6717d7e4", title: "Payment" }
+                  ]
+                },
+                {
+                  title: "Account",
+                  description: "Manage your profile, orders, and preferences in one place.",
+                  links: [
+                    { text: "Sign In", url: "#" },
+                    { text: "Register", url: "#" }
+                  ],
+                  carousel: [
+                    { url: "https://images.unsplash.com/photo-1516321315098-3a56f2e2b456", title: "Profile" },
+                    { url: "https://images.unsplash.com/photo-1537511446984-935f663eb5f0", title: "Orders" },
+                    { url: "https://images.unsplash.com/photo-1529119570192-7d3f0e87bc00", title: "Settings" }
+                  ]
+                }
               ]
             });
           });
@@ -279,6 +411,7 @@
           <Carousel carouselData={data.carousel} />
           <Hero onSearch={setSearchTerm} />
           {searchTerm && <SearchResults searchTerm={searchTerm} products={products} carouselData={data.carousel} />}
+          <HeaderLinkGrid headerLinks={data.headerLinks} />
           <ProductGrid />
           <Services servicesData={data.services} />
           <Footer />
