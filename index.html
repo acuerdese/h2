@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,7 +80,11 @@
       );
     }
 
-    function Hero() {
+    function Hero({ onSearch }) {
+      const handleSearch = (event) => {
+        onSearch(event.target.value);
+      };
+
       return (
         <div class="bg-blue-50 py-12">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -90,8 +93,51 @@
             <input
               type="text"
               placeholder="Search for items..."
+              onChange={handleSearch}
               class="w-full max-w-md mx-auto p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
+          </div>
+        </div>
+      );
+    }
+
+    function SearchResults({ searchTerm, products, carouselData }) {
+      const filteredItems = [
+        ...products.filter(
+          (product) =>
+            product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.description?.toLowerCase().includes(searchTerm.toLowerCase())
+        ),
+        ...carouselData.filter(
+          (slide) =>
+            slide.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            slide.description.toLowerCase().includes(searchTerm.toLowerCase())
+        ),
+      ];
+
+      return (
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">
+            Search Results {searchTerm && `for "${searchTerm}"`}
+          </h2>
+          {filteredItems.length === 0 && searchTerm && (
+            <p class="text-gray-600">No results found.</p>
+          )}
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredItems.map((item, index) => (
+              <div key={index} class="bg-white rounded-lg shadow hover:shadow-lg transition">
+                <img src={item.image} alt={item.title} class="w-full h-48 object-cover rounded-t-lg" />
+                <div class="p-4">
+                  <h3 class="text-lg font-semibold text-gray-900">{item.title}</h3>
+                  <p class="text-gray-600">{item.description || `$${item.price}`}</p>
+                  {item.price && (
+                    <button class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                      Add to Cart
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       );
@@ -112,10 +158,10 @@
 
     function ProductGrid() {
       const products = [
-        { title: "Handmade Ceramic Mug", price: 24.99, image: "https://via.placeholder.com/300x200?text=Mug" },
-        { title: "Woven Wall Hanging", price: 39.99, image: "https://via.placeholder.com/300x200?text=Wall+Hanging" },
-        { title: "Leather Journal", price: 29.99, image: "https://via.placeholder.com/300x200?text=Journal" },
-        { title: "Knitted Scarf", price: 19.99, image: "https://via.placeholder.com/300x200?text=Scarf" },
+        { title: "Handmade Ceramic Mug", price: 24.99, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c" },
+        { title: "Woven Wall Hanging", price: 39.99, image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38" },
+        { title: "Leather Journal", price: 29.99, image: "https://images.unsplash.com/photo-1512546148165-e50d714a565a" },
+        { title: "Knitted Scarf", price: 19.99, image: "https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8" },
       ];
 
       return (
@@ -183,9 +229,10 @@
 
     function App() {
       const [data, setData] = React.useState({ carousel: [], services: [] });
+      const [searchTerm, setSearchTerm] = React.useState('');
 
       React.useEffect(() => {
-        fetch('content.xml')
+        fetch('./content.xml')
           .then(response => response.text())
           .then(xmlText => {
             const parser = new DOMParser();
@@ -204,7 +251,6 @@
           })
           .catch(error => {
             console.error('Error fetching XML:', error);
-            // Fallback data in case XML fetch fails
             setData({
               carousel: [
                 { image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", title: "Handcrafted Pottery", description: "Unique ceramic pieces for your home." },
@@ -220,11 +266,19 @@
           });
       }, []);
 
+      const products = [
+        { title: "Handmade Ceramic Mug", price: 24.99, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c" },
+        { title: "Woven Wall Hanging", price: 39.99, image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38" },
+        { title: "Leather Journal", price: 29.99, image: "https://images.unsplash.com/photo-1512546148165-e50d714a565a" },
+        { title: "Knitted Scarf", price: 19.99, image: "https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8" },
+      ];
+
       return (
         <div>
           <Header />
           <Carousel carouselData={data.carousel} />
-          <Hero />
+          <Hero onSearch={setSearchTerm} />
+          {searchTerm && <SearchResults searchTerm={searchTerm} products={products} carouselData={data.carousel} />}
           <ProductGrid />
           <Services servicesData={data.services} />
           <Footer />
@@ -241,4 +295,3 @@
   </script>
 </body>
 </html>
-```
