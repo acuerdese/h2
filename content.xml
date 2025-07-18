@@ -40,11 +40,11 @@
       <description>Welcome to our marketplace, your destination for unique handmade goods.</description>
       <link>
         <text>Learn More</text>
-        <url>#</url>
+        <url>#home</url>
       </link>
       <link>
         <text>Explore</text>
-        <url>#</url>
+        <url>#products</url>
       </link>
       <carousel>
         <image>
@@ -66,11 +66,11 @@
       <description>Browse a wide selection of artisan products from global creators.</description>
       <link>
         <text>View Categories</text>
-        <url>#</url>
+        <url>#shop</url>
       </link>
       <link>
         <text>New Arrivals</text>
-        <url>#</url>
+        <url>#products</url>
       </link>
       <carousel>
         <image>
@@ -92,11 +92,11 @@
       <description>Review and manage your selected items before checkout.</description>
       <link>
         <text>View Cart</text>
-        <url>#</url>
+        <url>#cart</url>
       </link>
       <link>
         <text>Checkout</text>
-        <url>#</url>
+        <url>#cart</url>
       </link>
       <carousel>
         <image>
@@ -118,11 +118,11 @@
       <description>Manage your profile, orders, and preferences in one place.</description>
       <link>
         <text>Sign In</text>
-        <url>#</url>
+        <url>#account</url>
       </link>
       <link>
         <text>Register</text>
-        <url>#</url>
+        <url>#account</url>
       </link>
       <carousel>
         <image>
