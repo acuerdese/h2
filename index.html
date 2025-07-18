@@ -17,16 +17,16 @@
   </div>
 
   <script type="text/babel">
-    function Header() {
+    function Header({ setActiveSection }) {
       return (
         <header class="bg-white shadow">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold text-gray-900">Marketplace</h1>
             <nav class="flex space-x-4">
-              <a href="#" class="text-gray-600 hover:text-gray-900">Home</a>
-              <a href="#" class="text-gray-600 hover:text-gray-900">Shop</a>
-              <a href="#" class="text-gray-600 hover:text-gray-900">Cart</a>
-              <a href="#" class="text-gray-600 hover:text-gray-900">Account</a>
+              <button onClick={() => setActiveSection('home')} class="text-gray-600 hover:text-gray-900">Home</button>
+              <button onClick={() => setActiveSection('shop')} class="text-gray-600 hover:text-gray-900">Shop</button>
+              <button onClick={() => setActiveSection('cart')} class="text-gray-600 hover:text-gray-900">Cart</button>
+              <button onClick={() => setActiveSection('account')} class="text-gray-600 hover:text-gray-900">Account</button>
             </nav>
             <div class="flex space-x-2">
               <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Sign In</button>
@@ -178,7 +178,7 @@
       );
     }
 
-    function HeaderLinkGrid({ headerLinks }) {
+    function HeaderLinkGrid({ headerLinks, setActiveSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Explore Our Features</h2>
@@ -189,12 +189,12 @@
                 <p class="text-gray-600 mb-4">{link.description}</p>
                 <MiniCarousel images={link.carousel} />
                 <div class="mt-4 flex space-x-4">
-                  <a
-                    href={link.links[0].url}
+                  <button
+                    onClick={() => setActiveSection(link.title.toLowerCase())}
                     class="text-blue-600 hover:text-blue-800 underline"
                   >
                     {link.links[0].text}
-                  </a>
+                  </button>
                   <a
                     href={link.links[1].url}
                     class="text-blue-600 hover:text-blue-800 underline"
@@ -237,6 +237,28 @@
             {products.map((product, index) => (
               <ProductCard key={index} title={product.title} price={product.price} image={product.image} />
             ))}
+          </div>
+        </div>
+      );
+    }
+
+    function CartSection() {
+      return (
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Your Cart</h2>
+          <p class="text-gray-600">Your cart is currently empty. Start shopping to add items!</p>
+        </div>
+      );
+    }
+
+    function AccountSection() {
+      return (
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Your Account</h2>
+          <p class="text-gray-600">Sign in to manage your profile and orders.</p>
+          <div class="mt-4 flex space-x-4">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Sign In</button>
+            <button class="bg-gray-200 text-gray-900 px-4 py-2 rounded hover:bg-gray-300">Register</button>
           </div>
         </div>
       );
@@ -296,6 +318,7 @@
     function App() {
       const [data, setData] = React.useState({ carousel: [], services: [], headerLinks: [] });
       const [searchTerm, setSearchTerm] = React.useState('');
+      const [activeSection, setActiveSection] = React.useState('home');
 
       React.useEffect(() => {
         fetch('./content.xml')
@@ -350,7 +373,7 @@
                   ],
                   carousel: [
                     { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", title: "Pottery" },
-                    { url: "https://images.unsplash.com/photo-1513519245088-0e12902e5石", title: "Decor" },
+                    { url: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38", title: "Decor" },
                     { url: "https://images.unsplash.com/photo-1590402494587-44b67d99b33d", title: "Textiles" }
                   ]
                 },
@@ -358,7 +381,7 @@
                   title: "Shop",
                   description: "Browse a wide selection of artisan products from global creators.",
                   links: [
-                    { text: "View Categories", url: "#" },
+                    { text: "View Categories", url: "#products" },
                     { text: "New Arrivals", url: "#" }
                   ],
                   carousel: [
@@ -371,7 +394,7 @@
                   title: "Cart",
                   description: "Review and manage your selected items before checkout.",
                   links: [
-                    { text: "View Cart", url: "#" },
+                    { text: "View Cart", url: "#cart" },
                     { text: "Checkout", url: "#" }
                   ],
                   carousel: [
@@ -384,7 +407,7 @@
                   title: "Account",
                   description: "Manage your profile, orders, and preferences in one place.",
                   links: [
-                    { text: "Sign In", url: "#" },
+                    { text: "Sign In", url: "#account" },
                     { text: "Register", url: "#" }
                   ],
                   carousel: [
@@ -407,12 +430,18 @@
 
       return (
         <div>
-          <Header />
-          <Carousel carouselData={data.carousel} />
-          <Hero onSearch={setSearchTerm} />
-          {searchTerm && <SearchResults searchTerm={searchTerm} products={products} carouselData={data.carousel} />}
-          <HeaderLinkGrid headerLinks={data.headerLinks} />
-          <ProductGrid />
+          <Header setActiveSection={setActiveSection} />
+          {activeSection === 'home' && (
+            <>
+              <Carousel carouselData={data.carousel} />
+              <Hero onSearch={setSearchTerm} />
+              {searchTerm && <SearchResults searchTerm={searchTerm} products={products} carouselData={data.carousel} />}
+              <HeaderLinkGrid headerLinks={data.headerLinks} setActiveSection={setActiveSection} />
+            </>
+          )}
+          {activeSection === 'shop' && <ProductGrid />}
+          {activeSection === 'cart' && <CartSection />}
+          {activeSection === 'account' && <AccountSection />}
           <Services servicesData={data.services} />
           <Footer />
         </div>
