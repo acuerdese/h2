@@ -1,0 +1,39 @@
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+  <carousel>
+    <slide>
+      <image>https://images.unsplash.com/photo-1600585154340-be6161a56a0c</image>
+      <title>Handcrafted Pottery</title>
+      <description>Unique ceramic pieces for your home.</description>
+    </slide>
+    <slide>
+      <image>https://images.unsplash.com/photo-1551488831-68b4d0c075c0</image>
+      <title>Artisan Jewelry</title>
+      <description>Handmade accessories with timeless elegance.</description>
+    </slide>
+    <slide>
+      <image>https://images.unsplash.com/photo-1590402494587-44b67d99b33d</image>
+      <title>Eco-Friendly Textiles</title>
+      <description>Sustainable fabrics for modern living.</description>
+    </slide>
+  </carousel>
+  <services>
+    <service>
+      <icon>https://images.unsplash.com/photo-1516321315098-3a56f2e2b456</icon>
+      <title>Fast Shipping</title>
+      <description>Get your orders delivered in record time.</description>
+    </service>
+    <service>
+      <icon>https://images.unsplash.com/photo-1516321315098-3a56f2e2b456</icon>
+      <title>Secure Payments</title>
+      <description>Shop with confidence using our secure checkout.</description>
+    </service>
+    <service>
+      <icon>https://images.unsplash.com/photo-1516321315098-3a56f2e2b456</icon>
+      <title>Customer Support</title>
+      <description>24/7 assistance for all your needs.</description>
+    </service>
+  </services>
+</content>
+```
