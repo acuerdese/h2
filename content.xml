@@ -117,10 +117,6 @@
       <title>Account</title>
       <description>Manage your profile, orders, and preferences in one place.</description>
       <link>
-        <text>Sign In</text>
-        <url>#account</url>
-      </link>
-      <link>
         <text>Register</text>
         <url>#account</url>
       </link>
