@@ -12,14 +12,14 @@
 <body class="bg-gray-100 font-sans">
   <div id="root">
     <div class="text-center p-4 text-red-600">
-      Loading Marketplace... If this message persists, regañe a Grokcito
+      Loading Marketplace... If this message persists, ensure JavaScript is enabled and check your internet connection.
     </div>
   </div>
 
   <script type="text/babel">
     function Header({ setActiveSection, cart }) {
       return (
-        <header class="bg-white shadow">
+        <header class="bg-white shadow fixed top-0 left-0 right-0 z-10">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold text-gray-900">Marketplace</h1>
             <nav class="flex space-x-4">
@@ -30,9 +30,6 @@
               </button>
               <button onClick={() => setActiveSection('account')} class="text-gray-600 hover:text-gray-900">Account</button>
             </nav>
-            <div class="flex space-x-2">
-              <button class="bg-gray-200 text-gray-900 px-4 py-2 rounded hover:bg-gray-300">Sign Up</button>
-            </div>
           </div>
         </header>
       );
@@ -40,6 +37,10 @@
 
     function Carousel({ carouselData }) {
       const [currentSlide, setCurrentSlide] = React.useState(0);
+      const [touchStart, setTouchStart] = React.useState(null);
+      const [touchEnd, setTouchEnd] = React.useState(null);
+
+      const minSwipeDistance = 50;
 
       React.useEffect(() => {
         const interval = setInterval(() => {
@@ -50,10 +51,37 @@
 
       const goToSlide = (index) => setCurrentSlide(index);
 
+      const onTouchStart = (e) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+      };
+
+      const onTouchMove = (e) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+      };
+
+      const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+        if (isLeftSwipe) {
+          setCurrentSlide((prev) => (prev + 1) % carouselData.length);
+        }
+        if (isRightSwipe) {
+          setCurrentSlide((prev) => (prev - 1 + carouselData.length) % carouselData.length);
+        }
+      };
+
       return (
-        <div class="relative bg-blue-50 py-12">
+        <div class="relative bg-blue-50 py-12 pt-20">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="relative h-96 overflow-hidden rounded-lg">
+            <div
+              class="relative h-96 overflow-hidden rounded-lg"
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
               {carouselData.map((slide, index) => (
                 <div
                   key={index}
@@ -147,62 +175,37 @@
       );
     }
 
-    function MiniCarousel({ images }) {
-      const [currentSlide, setCurrentSlide] = React.useState(0);
+    function FeatureGrid({ headerLinks, addToCart }) {
+      const productsMap = {
+        'Home': { title: 'Handmade Ceramic Mug', price: 24.99, image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c' },
+        'Shop': { title: 'Woven Wall Hanging', price: 39.99, image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38' },
+        'Cart': { title: 'Leather Journal', price: 29.99, image: 'https://images.unsplash.com/photo-1512546148165-e50d714a565a' },
+        'Account': { title: 'Knitted Scarf', price: 19.99, image: 'https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8' }
+      };
 
-      React.useEffect(() => {
-        const interval = setInterval(() => {
-          setCurrentSlide((prev) => (prev + 1) % images.length);
-        }, 3000);
-        return () => clearInterval(interval);
-      }, [images]);
-
-      const goToSlide = (index) => setCurrentSlide(index);
-
-      return (
-        <div class="relative h-32 overflow-hidden rounded-lg">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              class={`absolute inset-0 transition-opacity duration-500 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img src={image.url} alt={image.title} class="w-full h-full object-cover" />
-            </div>
-          ))}
-          <div class="absolute bottom-2 left-0 right-0 flex justify-center space-x-2">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                class={`w-2 h-2 rounded-full ${index === currentSlide ? 'bg-blue-600' : 'bg-gray-400'}`}
-                onClick={() => goToSlide(index)}
-              ></button>
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    function HeaderLinkGrid({ headerLinks, setActiveSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Explore Our Features</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {headerLinks.map((link, index) => (
               <div key={index} class="bg-white rounded-lg shadow p-6">
+                <img
+                  src={link.image.url}
+                  alt={link.title}
+                  class="w-full h-48 object-cover rounded-t-lg mb-4"
+                />
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">{link.title}</h3>
                 <p class="text-gray-600 mb-4">{link.description}</p>
-                <MiniCarousel images={link.carousel} />
-                <div class="mt-4 flex space-x-4">
-                  {link.links.map((l, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActiveSection(link.title.toLowerCase())}
-                      class="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      {l.text}
-                    </button>
-                  ))}
-                </div>
+                <button
+                  onClick={() => addToCart(productsMap[link.title] || {
+                    title: `${link.title} Item`,
+                    price: 19.99,
+                    image: link.image.url
+                  })}
+                  class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                >
+                  Add to Cart
+                </button>
               </div>
             ))}
           </div>
@@ -295,10 +298,7 @@
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Your Account</h2>
-          <p class="text-gray-600">Register to manage your profile and orders.</p>
-          <div class="mt-4 flex space-x-4">
-            <button class="bg-gray-200 text-gray-900 px-4 py-2 rounded hover:bg-gray-300">Register</button>
-          </div>
+          <p class="text-gray-600">Manage your profile and orders.</p>
         </div>
       );
     }
@@ -382,14 +382,10 @@
             const headerLinks = Array.from(xml.querySelectorAll('headerLinks link')).map(link => ({
               title: link.querySelector('title').textContent,
               description: link.querySelector('description').textContent,
-              links: Array.from(link.querySelectorAll('link')).map(l => ({
-                text: l.querySelector('text').textContent,
-                url: l.querySelector('url').textContent
-              })),
-              carousel: Array.from(link.querySelectorAll('carousel image')).map(img => ({
-                url: img.querySelector('url').textContent,
-                title: img.querySelector('title').textContent
-              }))
+              image: {
+                url: link.querySelector('image url').textContent,
+                title: link.querySelector('image title').textContent
+              }
             }));
             setData({ carousel, services, headerLinks });
           })
@@ -410,52 +406,22 @@
                 {
                   title: "Home",
                   description: "Welcome to our marketplace, your destination for unique handmade goods.",
-                  links: [
-                    { text: "Learn More", url: "#home" },
-                    { text: "Explore", url: "#products" }
-                  ],
-                  carousel: [
-                    { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", title: "Pottery" },
-                    { url: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38", title: "Decor" },
-                    { url: "https://images.unsplash.com/photo-1590402494587-44b67d99b33d", title: "Textiles" }
-                  ]
+                  image: { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", title: "Pottery" }
                 },
                 {
                   title: "Shop",
                   description: "Browse a wide selection of artisan products from global creators.",
-                  links: [
-                    { text: "View Categories", url: "#shop" },
-                    { text: "New Arrivals", url: "#products" }
-                  ],
-                  carousel: [
-                    { url: "https://images.unsplash.com/photo-1551488831-68b4d0c075c0", title: "Jewelry" },
-                    { url: "https://images.unsplash.com/photo-1512546148165-e50d714a565a", title: "Journal" },
-                    { url: "https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8", title: "Scarf" }
-                  ]
+                  image: { url: "https://images.unsplash.com/photo-1551488831-68b4d0c075c0", title: "Jewelry" }
                 },
                 {
-                  title: " Cartwright and manage your selected items before checkout.",
-                  links: [
-                    { text: "View Cart", url: "#cart" },
-                    { text: "Checkout", url: "#cart" }
-                  ],
-                  carousel: [
-                    { url: "https://images.unsplash.com/photo-1572635196237-14b3f81f6b07", title: "Cart Items" },
-                    { url: "https://images.unsplash.com/photo-1591337676887-a217a6970a8a", title: "Checkout" },
-                    { url: "https://images.unsplash.com/photo-1556740739-887f6717d7e4", title: "Payment" }
-                  ]
+                  title: "Cart",
+                  description: "Review and manage your selected items before checkout.",
+                  image: { url: "https://images.unsplash.com/photo-1572635196237-14b3f81f6b07", title: "Cart Items" }
                 },
                 {
                   title: "Account",
                   description: "Manage your profile, orders, and preferences in one place.",
-                  links: [
-                    { text: "Register", url: "#account" }
-                  ],
-                  carousel: [
-                    { url: "https://images.unsplash.com/photo-1516321315098-3a56f2e2b456", title: "Profile" },
-                    { url: "https://images.unsplash.com/photo-1537511446984-935f663eb5f0", title: "Orders" },
-                    { url: "https://images.unsplash.com/photo-1529119570192-7d3f0e87bc00", title: "Settings" }
-                  ]
+                  image: { url: "https://images.unsplash.com/photo-1516321315098-3a56f2e2b456", title: "Profile" }
                 }
               ]
             });
@@ -492,7 +458,7 @@
         { title: "Handmade Ceramic Mug", price: 24.99, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c" },
         { title: "Woven Wall Hanging", price: 39.99, image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38" },
         { title: "Leather Journal", price: 29.99, image: "https://images.unsplash.com/photo-1512546148165-e50d714a565a" },
-        { title: "Knitted Scarf", price: 19.99, image: "https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8" },
+        { title: "Knitted Scarf", price: 19.99, image: "https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8" }
       ];
 
       return (
@@ -503,7 +469,7 @@
               <Carousel carouselData={data.carousel} />
               <Hero onSearch={setSearchTerm} />
               {searchTerm && <SearchResults searchTerm={searchTerm} products={products} carouselData={data.carousel} addToCart={addToCart} />}
-              <HeaderLinkGrid headerLinks={data.headerLinks} setActiveSection={setActiveSection} />
+              <FeatureGrid headerLinks={data.headerLinks} addToCart={addToCart} />
             </>
           )}
           {activeSection === 'shop' && <ProductGrid products={products} addToCart={addToCart} />}
