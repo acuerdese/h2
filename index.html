@@ -17,7 +17,7 @@
   </div>
 
   <script type="text/babel">
-    function Header({ setActiveSection }) {
+    function Header({ setActiveSection, cart }) {
       return (
         <header class="bg-white shadow">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
@@ -25,11 +25,12 @@
             <nav class="flex space-x-4">
               <button onClick={() => setActiveSection('home')} class="text-gray-600 hover:text-gray-900">Home</button>
               <button onClick={() => setActiveSection('shop')} class="text-gray-600 hover:text-gray-900">Shop</button>
-              <button onClick={() => setActiveSection('cart')} class="text-gray-600 hover:text-gray-900">Cart</button>
+              <button onClick={() => setActiveSection('cart')} class="text-gray-600 hover:text-gray-900">
+                Cart ({cart.length})
+              </button>
               <button onClick={() => setActiveSection('account')} class="text-gray-600 hover:text-gray-900">Account</button>
             </nav>
             <div class="flex space-x-2">
-              <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Sign In</button>
               <button class="bg-gray-200 text-gray-900 px-4 py-2 rounded hover:bg-gray-300">Sign Up</button>
             </div>
           </div>
@@ -101,7 +102,7 @@
       );
     }
 
-    function SearchResults({ searchTerm, products, carouselData }) {
+    function SearchResults({ searchTerm, products, carouselData, addToCart }) {
       const filteredItems = [
         ...products.filter(
           (product) =>
@@ -131,7 +132,10 @@
                   <h3 class="text-lg font-semibold text-gray-900">{item.title}</h3>
                   <p class="text-gray-600">{item.description || `$${item.price}`}</p>
                   {item.price && (
-                    <button class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                    <button
+                      onClick={() => addToCart(item)}
+                      class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                    >
                       Add to Cart
                     </button>
                   )}
@@ -189,18 +193,15 @@
                 <p class="text-gray-600 mb-4">{link.description}</p>
                 <MiniCarousel images={link.carousel} />
                 <div class="mt-4 flex space-x-4">
-                  <button
-                    onClick={() => setActiveSection(link.title.toLowerCase())}
-                    class="text-blue-600 hover:text-blue-800 underline"
-                  >
-                    {link.links[0].text}
-                  </button>
-                  <a
-                    href={link.links[1].url}
-                    class="text-blue-600 hover:text-blue-800 underline"
-                  >
-                    {link.links[1].text}
-                  </a>
+                  {link.links.map((l, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveSection(link.title.toLowerCase())}
+                      class="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      {l.text}
+                    </button>
+                  ))}
                 </div>
               </div>
             ))}
@@ -209,44 +210,83 @@
       );
     }
 
-    function ProductCard({ title, price, image }) {
+    function ProductCard({ title, price, image, addToCart }) {
       return (
         <div class="bg-white rounded-lg shadow hover:shadow-lg transition">
           <img src={image} alt={title} class="w-full h-48 object-cover rounded-t-lg" />
           <div class="p-4">
             <h3 class="text-lg font-semibold text-gray-900">{title}</h3>
             <p class="text-gray-600">${price}</p>
-            <button class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Add to Cart</button>
+            <button
+              onClick={() => addToCart({ title, price, image })}
+              class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            >
+              Add to Cart
+            </button>
           </div>
         </div>
       );
     }
 
-    function ProductGrid() {
-      const products = [
-        { title: "Handmade Ceramic Mug", price: 24.99, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c" },
-        { title: "Woven Wall Hanging", price: 39.99, image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38" },
-        { title: "Leather Journal", price: 29.99, image: "https://images.unsplash.com/photo-1512546148165-e50d714a565a" },
-        { title: "Knitted Scarf", price: 19.99, image: "https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8" },
-      ];
-
+    function ProductGrid({ products, addToCart }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Items</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product, index) => (
-              <ProductCard key={index} title={product.title} price={product.price} image={product.image} />
+              <ProductCard
+                key={index}
+                title={product.title}
+                price={product.price}
+                image={product.image}
+                addToCart={addToCart}
+              />
             ))}
           </div>
         </div>
       );
     }
 
-    function CartSection() {
+    function CartSection({ cart, removeFromCart, clearCart }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Your Cart</h2>
-          <p class="text-gray-600">Your cart is currently empty. Start shopping to add items!</p>
+          {cart.length === 0 ? (
+            <p class="text-gray-600">Your cart is currently empty. Start shopping to add items!</p>
+          ) : (
+            <>
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {cart.map((item, index) => (
+                  <div key={index} class="bg-white rounded-lg shadow p-4">
+                    <img src={item.image} alt={item.title} class="w-full h-48 object-cover rounded-t-lg" />
+                    <div class="p-4">
+                      <h3 class="text-lg font-semibold text-gray-900">{item.title}</h3>
+                      <p class="text-gray-600">${item.price} x {item.quantity}</p>
+                      <button
+                        onClick={() => removeFromCart(item.title)}
+                        class="mt-2 w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div class="mt-6 flex justify-between">
+                <button
+                  onClick={clearCart}
+                  class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                >
+                  Clear Cart
+                </button>
+                <button
+                  class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Proceed to Checkout
+                </button>
+              </div>
+            </>
+          )}
         </div>
       );
     }
@@ -255,9 +295,8 @@
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Your Account</h2>
-          <p class="text-gray-600">Sign in to manage your profile and orders.</p>
+          <p class="text-gray-600">Register to manage your profile and orders.</p>
           <div class="mt-4 flex space-x-4">
-            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Sign In</button>
             <button class="bg-gray-200 text-gray-900 px-4 py-2 rounded hover:bg-gray-300">Register</button>
           </div>
         </div>
@@ -319,6 +358,10 @@
       const [data, setData] = React.useState({ carousel: [], services: [], headerLinks: [] });
       const [searchTerm, setSearchTerm] = React.useState('');
       const [activeSection, setActiveSection] = React.useState('home');
+      const [cart, setCart] = React.useState(() => {
+        const savedCart = localStorage.getItem('cart');
+        return savedCart ? JSON.parse(savedCart) : [];
+      });
 
       React.useEffect(() => {
         fetch('./content.xml')
@@ -368,8 +411,8 @@
                   title: "Home",
                   description: "Welcome to our marketplace, your destination for unique handmade goods.",
                   links: [
-                    { text: "Learn More", url: "#" },
-                    { text: "Explore", url: "#" }
+                    { text: "Learn More", url: "#home" },
+                    { text: "Explore", url: "#products" }
                   ],
                   carousel: [
                     { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", title: "Pottery" },
@@ -381,8 +424,8 @@
                   title: "Shop",
                   description: "Browse a wide selection of artisan products from global creators.",
                   links: [
-                    { text: "View Categories", url: "#products" },
-                    { text: "New Arrivals", url: "#" }
+                    { text: "View Categories", url: "#shop" },
+                    { text: "New Arrivals", url: "#products" }
                   ],
                   carousel: [
                     { url: "https://images.unsplash.com/photo-1551488831-68b4d0c075c0", title: "Jewelry" },
@@ -391,11 +434,10 @@
                   ]
                 },
                 {
-                  title: "Cart",
-                  description: "Review and manage your selected items before checkout.",
+                  title: " Cartwright and manage your selected items before checkout.",
                   links: [
                     { text: "View Cart", url: "#cart" },
-                    { text: "Checkout", url: "#" }
+                    { text: "Checkout", url: "#cart" }
                   ],
                   carousel: [
                     { url: "https://images.unsplash.com/photo-1572635196237-14b3f81f6b07", title: "Cart Items" },
@@ -407,8 +449,7 @@
                   title: "Account",
                   description: "Manage your profile, orders, and preferences in one place.",
                   links: [
-                    { text: "Sign In", url: "#account" },
-                    { text: "Register", url: "#" }
+                    { text: "Register", url: "#account" }
                   ],
                   carousel: [
                     { url: "https://images.unsplash.com/photo-1516321315098-3a56f2e2b456", title: "Profile" },
@@ -421,6 +462,32 @@
           });
       }, []);
 
+      React.useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+      }, [cart]);
+
+      const addToCart = (item) => {
+        setCart(prevCart => {
+          const existingItem = prevCart.find(cartItem => cartItem.title === item.title);
+          if (existingItem) {
+            return prevCart.map(cartItem =>
+              cartItem.title === item.title
+                ? { ...cartItem, quantity: cartItem.quantity + 1 }
+                : cartItem
+            );
+          }
+          return [...prevCart, { ...item, quantity: 1 }];
+        });
+      };
+
+      const removeFromCart = (title) => {
+        setCart(prevCart => prevCart.filter(item => item.title !== title));
+      };
+
+      const clearCart = () => {
+        setCart([]);
+      };
+
       const products = [
         { title: "Handmade Ceramic Mug", price: 24.99, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c" },
         { title: "Woven Wall Hanging", price: 39.99, image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38" },
@@ -430,17 +497,17 @@
 
       return (
         <div>
-          <Header setActiveSection={setActiveSection} />
+          <Header setActiveSection={setActiveSection} cart={cart} />
           {activeSection === 'home' && (
             <>
               <Carousel carouselData={data.carousel} />
               <Hero onSearch={setSearchTerm} />
-              {searchTerm && <SearchResults searchTerm={searchTerm} products={products} carouselData={data.carousel} />}
+              {searchTerm && <SearchResults searchTerm={searchTerm} products={products} carouselData={data.carousel} addToCart={addToCart} />}
               <HeaderLinkGrid headerLinks={data.headerLinks} setActiveSection={setActiveSection} />
             </>
           )}
-          {activeSection === 'shop' && <ProductGrid />}
-          {activeSection === 'cart' && <CartSection />}
+          {activeSection === 'shop' && <ProductGrid products={products} addToCart={addToCart} />}
+          {activeSection === 'cart' && <CartSection cart={cart} removeFromCart={removeFromCart} clearCart={clearCart} />}
           {activeSection === 'account' && <AccountSection />}
           <Services servicesData={data.services} />
           <Footer />
