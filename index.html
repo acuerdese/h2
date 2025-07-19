@@ -146,7 +146,7 @@
 
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">
             Search Results {searchTerm && `for "${searchTerm}"`}
           </h2>
           {filteredItems.length === 0 && searchTerm && (
@@ -182,10 +182,10 @@
     function FeatureGrids({ headerLinks, setActiveSection, setSelectedProduct, setPreviousSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Explore Our Features</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center mt-5">Explore Our Features</h2>
           {headerLinks.map((link, index) => (
             <div key={index} class="mb-12">
-              <h3 class="text-xl font-semibold text-gray-900 mb-4">{link.title}</h3>
+              <h3 class="text-xl font-semibold text-gray-900 mb-4 mt-5">{link.title}</h3>
               <p class="text-gray-600 mb-6">{link.description}</p>
               <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {link.images.map((item, idx) => (
@@ -242,7 +242,7 @@
     function ProductGrid({ products, setActiveSection, setSelectedProduct, setPreviousSection, section }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Items</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Featured Items</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product, index) => (
               <ProductCard
@@ -264,11 +264,11 @@
     function ProductDetails({ product, addToCart, setActiveSection, previousSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Product Details</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Product Details</h2>
           <div class="bg-white rounded-lg shadow p-6 flex flex-col md:flex-row">
             <img src={product.image} alt={product.title} class="w-full md:w-1/2 h-96 object-cover rounded-lg mb-4 md:mb-0 md:mr-6" />
             <div class="flex-1">
-              <h3 class="text-xl font-semibold text-gray-900 mb-2">{product.title}</h3>
+              <h3 class="text-xl font-semibold text-gray-900 mb-2 mt-5">{product.title}</h3>
               <p class="text-gray-600 mb-4">{product.description || 'A high-quality, handcrafted item from our artisan collection.'}</p>
               <p class="text-gray-900 font-bold mb-4">${product.price}</p>
               <div class="flex space-x-4">
@@ -297,7 +297,7 @@
     function CartSection({ cart, removeFromCart, clearCart }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Your Cart</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Your Cart</h2>
           {cart.length === 0 ? (
             <p class="text-gray-600">Your cart is currently empty. Start shopping to add items!</p>
           ) : (
@@ -341,7 +341,7 @@
     function ProductsSection({ products, setActiveSection, setSelectedProduct, setPreviousSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Our Products</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Our Products</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product, index) => (
               <ProductCard
@@ -364,12 +364,12 @@
       return (
         <div class="bg-white py-12">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Our Services</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center mt-5">Our Services</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
               {servicesData.map((service, index) => (
                 <div key={index} class="text-center">
                   <img src={service.icon} alt={service.title} class="w-16 h-16 mx-auto mb-4 rounded-full object-cover" />
-                  <h3 class="text-lg font-semibold text-gray-900">{service.title}</h3>
+                  <h3 class="text-lg font-semibold text-gray-900 mt-5">{service.title}</h3>
                   <p class="text-gray-600">{service.description}</p>
                 </div>
               ))}
@@ -385,11 +385,11 @@
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
-                <h3 class="text-lg font-semibold">Marketplace</h3>
+                <h3 class="text-lg font-semibold mt-5">Marketplace</h3>
                 <p class="mt-2 text-gray-400">Connecting artisans and buyers worldwide.</p>
               </div>
               <div>
-                <h3 class="text-lg font-semibold">Links</h3>
+                <h3 class="text-lg font-semibold mt-5">Links</h3>
                 <ul class="mt-2 space-y-2">
                   <li><a href="#" class="text-gray-400 hover:text-white">About</a></li>
                   <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
@@ -397,7 +397,7 @@
                 </ul>
               </div>
               <div>
-                <h3 class="text-lg font-semibold">Connect</h3>
+                <h3 class="text-lg font-semibold mt-5">Connect</h3>
                 <ul class="mt-2 space-y-2">
                   <li><a href="#" class="text-gray-400 hover:text-white">Twitter</a></li>
                   <li><a href="#" class="text-gray-400 hover:text-white">Instagram</a></li>
