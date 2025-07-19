@@ -40,7 +40,15 @@
       <description>Welcome to our marketplace, your destination for unique handmade goods.</description>
       <image>
         <url>https://images.unsplash.com/photo-1600585154340-be6161a56a0c</url>
-        <title>Pottery</title>
+        <title>Handmade Ceramic Mug</title>
+        <description>Unique ceramic piece for your home.</description>
+        <price>24.99</price>
+      </image>
+      <image>
+        <url>https://images.unsplash.com/photo-1513519245088-0e12902e5a38</url>
+        <title>Woven Wall Hanging</title>
+        <description>Artisanal decor for any room.</description>
+        <price>39.99</price>
       </image>
     </link>
     <link>
@@ -48,23 +56,31 @@
       <description>Browse a wide selection of artisan products from global creators.</description>
       <image>
         <url>https://images.unsplash.com/photo-1551488831-68b4d0c075c0</url>
-        <title>Jewelry</title>
+        <title>Artisan Jewelry</title>
+        <description>Timeless handmade accessories.</description>
+        <price>49.99</price>
+      </image>
+      <image>
+        <url>https://images.unsplash.com/photo-1512546148165-e50d714a565a</url>
+        <title>Leather Journal</title>
+        <description>Perfect for notes and sketches.</description>
+        <price>29.99</price>
       </image>
     </link>
     <link>
       <title>Cart</title>
       <description>Review and manage your selected items before checkout.</description>
       <image>
-        <url>https://images.unsplash.com/photo-1572635196237-14b3f81f6b07</url>
-        <title>Cart Items</title>
+        <url>https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8</url>
+        <title>Knitted Scarf</title>
+        <description>Cozy and handmade with care.</description>
+        <price>19.99</price>
       </image>
-    </link>
-    <link>
-      <title>Account</title>
-      <description>Manage your profile, orders, and preferences in one place.</description>
       <image>
-        <url>https://images.unsplash.com/photo-1516321315098-3a56f2e2b456</url>
-        <title>Profile</title>
+        <url>https://images.unsplash.com/photo-1591337676887-a217a6970a8a</url>
+        <title>Eco-Friendly Bag</title>
+        <description>Sustainable and stylish.</description>
+        <price>34.99</price>
       </image>
     </link>
   </headerLinks>
