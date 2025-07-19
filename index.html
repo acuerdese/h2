@@ -12,7 +12,7 @@
 <body class="bg-gray-100 font-sans">
   <div id="root">
     <div class="text-center p-4 text-red-600">
-      Loading Marketplace... If this message persists, cry
+      Loading Marketplace... If this message persists, ensure JavaScript is enabled and check your internet connection.
     </div>
   </div>
 
@@ -130,7 +130,7 @@
       );
     }
 
-    function SearchResults({ searchTerm, products, carouselData, addToCart }) {
+    function SearchResults({ searchTerm, products, carouselData, setActiveSection, setSelectedProduct, setPreviousSection }) {
       const filteredItems = [
         ...products.filter(
           (product) =>
@@ -161,10 +161,14 @@
                   <p class="text-gray-600">{item.description || `$${item.price}`}</p>
                   {item.price && (
                     <button
-                      onClick={() => addToCart(item)}
+                      onClick={() => {
+                        setSelectedProduct(item);
+                        setPreviousSection('home');
+                        setActiveSection('productDetails');
+                      }}
                       class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
                     >
-                      Add to Cart
+                      View Details
                     </button>
                   )}
                 </div>
@@ -175,22 +179,7 @@
       );
     }
 
-    function FeatureGrids({ headerLinks, addToCart }) {
-      const productsMap = {
-        'Home': [
-          { title: 'Handmade Ceramic Mug', price: 24.99, image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c', description: 'Unique ceramic piece for your home.' },
-          { title: 'Woven Wall Hanging', price: 39.99, image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38', description: 'Artisanal decor for any room.' }
-        ],
-        'Shop': [
-          { title: 'Artisan Jewelry', price: 49.99, image: 'https://images.unsplash.com/photo-1551488831-68b4d0c075c0', description: 'Timeless handmade accessories.' },
-          { title: 'Leather Journal', price: 29.99, image: 'https://images.unsplash.com/photo-1512546148165-e50d714a565a', description: 'Perfect for notes and sketches.' }
-        ],
-        'Cart': [
-          { title: 'Knitted Scarf', price: 19.99, image: 'https://images.unsplash.com/photo-1576867757603-0d1e5c5ae4b8', description: 'Cozy and handmade with care.' },
-          { title: 'Eco-Friendly Bag', price: 34.99, image: 'https://images.unsplash.com/photo-1591337676887-a217a6970a8a', description: 'Sustainable and stylish.' }
-        ]
-      };
-
+    function FeatureGrids({ headerLinks, setActiveSection, setSelectedProduct, setPreviousSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Explore Our Features</h2>
@@ -199,10 +188,10 @@
               <h3 class="text-xl font-semibold text-gray-900 mb-4">{link.title}</h3>
               <p class="text-gray-600 mb-6">{link.description}</p>
               <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {productsMap[link.title].map((item, idx) => (
+                {link.images.map((item, idx) => (
                   <div key={idx} class="bg-white rounded-lg shadow p-4">
                     <img
-                      src={item.image}
+                      src={item.url}
                       alt={item.title}
                       class="w-full h-48 object-cover rounded-t-lg mb-4"
                     />
@@ -210,10 +199,14 @@
                     <p class="text-gray-600 mb-2">{item.description}</p>
                     <p class="text-gray-600 mb-2">${item.price}</p>
                     <button
-                      onClick={() => addToCart(item)}
+                      onClick={() => {
+                        setSelectedProduct({ title: item.title, price: item.price, image: item.url, description: item.description });
+                        setPreviousSection('home');
+                        setActiveSection('productDetails');
+                      }}
                       class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
                     >
-                      Add to Cart
+                      View Details
                     </button>
                   </div>
                 ))}
@@ -224,7 +217,7 @@
       );
     }
 
-    function ProductCard({ title, price, image, addToCart }) {
+    function ProductCard({ title, price, image, setActiveSection, setSelectedProduct, setPreviousSection, section }) {
       return (
         <div class="bg-white rounded-lg shadow hover:shadow-lg transition">
           <img src={image} alt={title} class="w-full h-48 object-cover rounded-t-lg" />
@@ -232,17 +225,21 @@
             <h3 class="text-lg font-semibold text-gray-900">{title}</h3>
             <p class="text-gray-600">${price}</p>
             <button
-              onClick={() => addToCart({ title, price, image })}
+              onClick={() => {
+                setSelectedProduct({ title, price, image });
+                setPreviousSection(section);
+                setActiveSection('productDetails');
+              }}
               class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
             >
-              Add to Cart
+              View Details
             </button>
           </div>
         </div>
       );
     }
 
-    function ProductGrid({ products, addToCart }) {
+    function ProductGrid({ products, setActiveSection, setSelectedProduct, setPreviousSection, section }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Items</h2>
@@ -253,9 +250,45 @@
                 title={product.title}
                 price={product.price}
                 image={product.image}
-                addToCart={addToCart}
+                setActiveSection={setActiveSection}
+                setSelectedProduct={setSelectedProduct}
+                setPreviousSection={setPreviousSection}
+                section={section}
               />
             ))}
+          </div>
+        </div>
+      );
+    }
+
+    function ProductDetails({ product, addToCart, setActiveSection, previousSection }) {
+      return (
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Product Details</h2>
+          <div class="bg-white rounded-lg shadow p-6 flex flex-col md:flex-row">
+            <img src={product.image} alt={product.title} class="w-full md:w-1/2 h-96 object-cover rounded-lg mb-4 md:mb-0 md:mr-6" />
+            <div class="flex-1">
+              <h3 class="text-xl font-semibold text-gray-900 mb-2">{product.title}</h3>
+              <p class="text-gray-600 mb-4">{product.description || 'A high-quality, handcrafted item from our artisan collection.'}</p>
+              <p class="text-gray-900 font-bold mb-4">${product.price}</p>
+              <div class="flex space-x-4">
+                <button
+                  onClick={() => {
+                    addToCart(product);
+                    setActiveSection(previousSection);
+                  }}
+                  class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Add to Cart
+                </button>
+                <button
+                  onClick={() => setActiveSection(previousSection)}
+                  class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                >
+                  Back
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       );
@@ -305,7 +338,7 @@
       );
     }
 
-    function ProductsSection({ products, addToCart }) {
+    function ProductsSection({ products, setActiveSection, setSelectedProduct, setPreviousSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">Our Products</h2>
@@ -316,7 +349,10 @@
                 title={product.title}
                 price={product.price}
                 image={product.image}
-                addToCart={addToCart}
+                setActiveSection={setActiveSection}
+                setSelectedProduct={setSelectedProduct}
+                setPreviousSection={setPreviousSection}
+                section="products"
               />
             ))}
           </div>
@@ -383,6 +419,8 @@
         const savedCart = localStorage.getItem('cart');
         return savedCart ? JSON.parse(savedCart) : [];
       });
+      const [selectedProduct, setSelectedProduct] = React.useState(null);
+      const [previousSection, setPreviousSection] = React.useState('home');
 
       React.useEffect(() => {
         fetch('./content.xml')
@@ -495,13 +533,50 @@
             <>
               <Carousel carouselData={data.carousel} />
               <Hero onSearch={setSearchTerm} />
-              {searchTerm && <SearchResults searchTerm={searchTerm} products={products} carouselData={data.carousel} addToCart={addToCart} />}
-              <FeatureGrids headerLinks={data.headerLinks} addToCart={addToCart} />
+              {searchTerm && (
+                <SearchResults
+                  searchTerm={searchTerm}
+                  products={products}
+                  carouselData={data.carousel}
+                  setActiveSection={setActiveSection}
+                  setSelectedProduct={setSelectedProduct}
+                  setPreviousSection={setPreviousSection}
+                />
+              )}
+              <FeatureGrids
+                headerLinks={data.headerLinks}
+                setActiveSection={setActiveSection}
+                setSelectedProduct={setSelectedProduct}
+                setPreviousSection={setPreviousSection}
+              />
             </>
           )}
-          {activeSection === 'shop' && <ProductGrid products={products} addToCart={addToCart} />}
+          {activeSection === 'shop' && (
+            <ProductGrid
+              products={products}
+              setActiveSection={setActiveSection}
+              setSelectedProduct={setSelectedProduct}
+              setPreviousSection={setPreviousSection}
+              section="shop"
+            />
+          )}
           {activeSection === 'cart' && <CartSection cart={cart} removeFromCart={removeFromCart} clearCart={clearCart} />}
-          {activeSection === 'products' && <ProductsSection products={products} addToCart={addToCart} />}
+          {activeSection === 'products' && (
+            <ProductsSection
+              products={products}
+              setActiveSection={setActiveSection}
+              setSelectedProduct={setSelectedProduct}
+              setPreviousSection={setPreviousSection}
+            />
+          )}
+          {activeSection === 'productDetails' && (
+            <ProductDetails
+              product={selectedProduct}
+              addToCart={addToCart}
+              setActiveSection={setActiveSection}
+              previousSection={previousSection}
+            />
+          )}
           <Services servicesData={data.services} />
           <Footer />
         </div>
