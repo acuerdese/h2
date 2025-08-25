@@ -3,45 +3,45 @@
   <carousel>
     <slide>
       <image>https://images.unsplash.com/photo-1682687982502-1529b3b33f85</image>
-      <title>Handcrafted Pottery</title>
+      <title>Amplia gama de cartón para diferentes usos</title>
       <description>Unique ceramic pieces for your home.</description>
     </slide>
     <slide>
       <image>https://images.unsplash.com/photo-1682687982502-1529b3b33f85</image>
       <title>Artisan Jewelry</title>
-      <description>Handmade accessories with timeless elegance.</description>
+      <description>Ofrecemos soluciones confiables y económicas</description>
     </slide>
     <slide>
       <image>https://images.unsplash.com/photo-1590402494587-44b67d99b33d</image>
       <title>Eco-Friendly Textiles</title>
-      <description>Sustainable fabrics for modern living.</description>
+      <description>Conozca nuestros servicios y productos.</description>
     </slide>
   </carousel>
   <services>
     <service>
       <icon>https://images.unsplash.com/photo-1585060544812-6b45742d762f</icon>
       <title>Fast Shipping</title>
-      <description>Get your orders delivered in record time.</description>
+      <description>Cotice con nosotros acá en Whatsapp</description>
     </service>
     <service>
       <icon>https://images.unsplash.com/photo-1556740739-887f6717d7e4</icon>
       <title>Secure Payments</title>
-      <description>Shop with confidence using our secure checkout.</description>
+      <description>Ofrecemos soluciones confiables y económicas</description>
     </service>
     <service>
       <icon>https://images.unsplash.com/photo-1516321315098-3a56f2e2b456</icon>
       <title>Customer Support</title>
-      <description>24/7 assistance for all your needs.</description>
+      <description>Cotice con nosotros acá en Whatsapp</description>
     </service>
   </services>
   <headerLinks>
     <link>
       <title>Home</title>
-      <description>Welcome to our marketplace, your destination for unique handmade goods.</description>
+      <description>Bienevidos a nuestro protafolio de productos y servicios.</description>
       <image>
         <url>https://images.unsplash.com/photo-1600585154340-be6161a56a0c</url>
         <title>Handmade Ceramic Mug</title>
-        <description>Unique ceramic piece for your home.</description>
+        <description>Cartones y empaques ajustados a sus necesidades.</description>
         <price>24.99</price>
       </image>
       <image>
