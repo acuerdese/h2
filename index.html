@@ -21,7 +21,7 @@
       return (
         <header class="bg-white shadow fixed top-0 left-0 right-0 z-10">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-900">Marketplace</h1>
+            <h1 class="text-2xl font-bold text-gray-900">Marey Limitada: Empaques, cartones y papeles</h1>
             <nav class="flex space-x-4">
               <button onClick={() => setActiveSection('home')} class="text-gray-600 hover:text-gray-900">Home</button>
               <button onClick={() => setActiveSection('shop')} class="text-gray-600 hover:text-gray-900">Shop</button>
@@ -117,8 +117,8 @@
       return (
         <div class="bg-blue-50 py-12">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Nuestrosservicios</h2>
-            <p class="text-lg text-gray-600 mb-6">Conozca, cotitice y compre</p>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Nuestros servicios</h2>
+            <p class="text-lg text-gray-600 mb-6">Conozca, cotice y compre</p>
             <input
               type="text"
               placeholder="Busqueda..."
@@ -168,7 +168,7 @@
                       }}
                       class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
                     >
-                      View Details
+                      Ver detalles
                     </button>
                   )}
                 </div>
@@ -182,7 +182,7 @@
     function FeatureGrids({ headerLinks, setActiveSection, setSelectedProduct, setPreviousSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center mt-5">Explore Our Features</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center mt-5">Explora nuestros productos</h2>
           {headerLinks.map((link, index) => (
             <div key={index} class="mb-12">
               <h3 class="text-xl font-semibold text-gray-900 mb-4 mt-5">{link.title}</h3>
@@ -242,7 +242,7 @@
     function ProductGrid({ products, setActiveSection, setSelectedProduct, setPreviousSection, section }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Featured Items</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Productos destacados</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product, index) => (
               <ProductCard
@@ -264,7 +264,7 @@
     function ProductDetails({ product, addToCart, setActiveSection, previousSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Product Details</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Detalles de nuestros productos</h2>
           <div class="bg-white rounded-lg shadow p-6 flex flex-col md:flex-row">
             <img src={product.image} alt={product.title} class="w-full md:w-1/2 h-96 object-cover rounded-lg mb-4 md:mb-0 md:mr-6" />
             <div class="flex-1">
@@ -299,7 +299,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Your Cart</h2>
           {cart.length === 0 ? (
-            <p class="text-gray-600">Your cart is currently empty. Start shopping to add items!</p>
+            <p class="text-gray-600">Tu listado de compra está vacío, dinos lo que necesitas</p>
           ) : (
             <>
               <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -329,7 +329,7 @@
                 <button
                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
-                  Proceed to Checkout
+                  Procede a finalizar compra
                 </button>
               </div>
             </>
@@ -341,7 +341,7 @@
     function ProductsSection({ products, setActiveSection, setSelectedProduct, setPreviousSection }) {
       return (
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Our Products</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 mt-5">Nuestros Productos</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((product, index) => (
               <ProductCard
@@ -386,18 +386,18 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div>
                 <h3 class="text-lg font-semibold mt-5">Marketplace</h3>
-                <p class="mt-2 text-gray-400">Connecting artisans and buyers worldwide.</p>
+                <p class="mt-2 text-gray-400">Compra en cualquier parte de Colombia</p>
               </div>
               <div>
                 <h3 class="text-lg font-semibold mt-5">Links</h3>
                 <ul class="mt-2 space-y-2">
-                  <li><a href="#" class="text-gray-400 hover:text-white">About</a></li>
-                  <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
-                  <li><a href="#" class="text-gray-400 hover:text-white">Terms</a></li>
+                  <li><a href="#" class="text-gray-400 hover:text-white">Nosotros</a></li>
+                  <li><a href="#" class="text-gray-400 hover:text-white">Contacto</a></li>
+                  <li><a href="#" class="text-gray-400 hover:text-white">Terminos y condiciones</a></li>
                 </ul>
               </div>
               <div>
-                <h3 class="text-lg font-semibold mt-5">Connect</h3>
+                <h3 class="text-lg font-semibold mt-5">Conéctate</h3>
                 <ul class="mt-2 space-y-2">
                   <li><a href="#" class="text-gray-400 hover:text-white">Twitter</a></li>
                   <li><a href="#" class="text-gray-400 hover:text-white">Instagram</a></li>
@@ -405,7 +405,7 @@
                 </ul>
               </div>
             </div>
-            <p class="mt-8 text-center text-gray-400">© 2025 Marketplace. All rights reserved.</p>
+            <p class="mt-8 text-center text-gray-400">© 2025 Ereisa Limitada. All rights reserved.</p>
           </div>
         </footer>
       );
